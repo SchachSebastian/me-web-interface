@@ -1,3 +1,4 @@
-export const storage: Record<string, any> = {};
+import { atom } from "nanostores";
+import { Item } from "../types/Item";
 
-storage['items'] = [];
+export const items = atom<Item[]>([]);

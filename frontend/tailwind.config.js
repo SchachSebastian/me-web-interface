@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       backgroundImage: {
-        'minecraft-bg': "url('minecraftBg.png')",
+        'minecraft-bg': "url('/minecraftBg.png')",
       },
     },
   },

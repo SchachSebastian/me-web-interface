@@ -11,12 +11,16 @@ function App() {
     const [clickedItem, setClickedItem] = useState<Item>();
     const socket = useWebSocket();
 
-    const {data: items, error} = useMeItems();
-    if (error || items === undefined) {
+    const {data: items, error,} = useMeItems();
+    if (error) {
         console.error(error);
         return <div>Error fetching items</div>;
     }
 
+    if (items === undefined) {
+        console.error(error);
+        return <div>Loading items</div>;
+    }
     const filteredItems = items.filter(item => item.id.toLowerCase().includes(searchText.toLowerCase()) || item.displayName.toLowerCase().includes(searchText.toLowerCase())).toSorted((a, b) => b.amount - a.amount);
 
 

@@ -7,6 +7,7 @@ function useSubscribe() {
     const subscribe = (key:string, {next}: SWRSubscriptionOptions<any, any>) => {
         socket.addEventListener('message', (event) => {
             const received = JSON.parse(event.data);
+            console.log(received);
             if (received.type === key) {
                 next(null, received.data);
             }
@@ -14,12 +15,15 @@ function useSubscribe() {
 
         socket.addEventListener('error', (event) => next("Error"))
 
-        return () => socket.removeEventListener('message', () => {})
+        return () => {
+            socket.removeEventListener('message', () => {})
+            socket.removeEventListener('error', () => {})
+        }
     }
     return subscribe;
 }
 
 export const useMeItems = () => {
     const subscribe = useSubscribe();
-    return useSWRSubscription<Item[], any>("receive-item-data", subscribe)
+    return useSWRSubscription<Item[], any>("update-inventory", subscribe)
 }
