@@ -17,6 +17,9 @@ local function getStoredItemIndex(item)
             return index
         end
     end
+    if(item.nbt ~= nil) then
+        print(textutils.serialiseJSON(diff))
+    end
 
     return nil
 end
