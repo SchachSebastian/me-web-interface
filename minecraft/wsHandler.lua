@@ -8,8 +8,7 @@ headers["Secret"] = "<your-secret-goes-here>"
 
 local ws = http.websocket(url, headers)
 
-
-while true do
+function wsHandler()
     sleep(1)
     local message = {
         type = "item-update",
@@ -19,4 +18,8 @@ while true do
     if ws then
        ws.send(serialisedMessage)
     end
+end
+
+while true do
+    pcall(wsHandler)
 end

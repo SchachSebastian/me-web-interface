@@ -1,5 +1,4 @@
-export type Item = {
-    type: string;
+export type McItem = {
     name: string;
     displayName: string;
     amount: number;

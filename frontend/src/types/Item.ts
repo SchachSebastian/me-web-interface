@@ -1,7 +1,9 @@
 export type Item = {
     type:string,
-    id: string,
+    name: string,
     displayName: string,
     amount: number,
-    craftable: boolean,
+    fingerprint: string,
+    nbt: string,
+    isCraftable: boolean,
 }

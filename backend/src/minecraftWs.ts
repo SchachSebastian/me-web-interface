@@ -12,7 +12,7 @@ let messageCallbacks: MessageCallback[] = [
     {
         type: "item-update",
         callback: (data: any) => {
-            items.set(data as Item[]);
+            items.set(data.map((d:any) => ({...d,type:'item'})) as Item[]);
         },
     },
 ];

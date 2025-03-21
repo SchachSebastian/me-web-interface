@@ -21,16 +21,16 @@ function App() {
         console.error(error);
         return <div>Loading items</div>;
     }
-    const filteredItems = items.filter(item => item.id.toLowerCase().includes(searchText.toLowerCase()) || item.displayName.toLowerCase().includes(searchText.toLowerCase())).toSorted((a, b) => b.amount - a.amount);
+    const filteredItems = items.filter(item => item.name.toLowerCase().includes(searchText.toLowerCase()) || item.displayName.toLowerCase().includes(searchText.toLowerCase())).toSorted((a, b) => b.amount - a.amount);
 
 
     const onCraftItem = (value:number) => {
-        if (clickedItem?.craftable) {
+        if (clickedItem?.isCraftable) {
             alert(`Crafting ${clickedItem.displayName}`);
             socket.send(JSON.stringify({
                 type: "craft-item",
                 data: {
-                    item: clickedItem.id,
+                    item: clickedItem.name,
                     amount: value
                 }
             }))
@@ -58,7 +58,7 @@ function App() {
                             className="grid grid-cols-[repeat(auto-fill,_minmax(100px,_1fr))] gap-4 p-4"
                         >
                             {filteredItems.map((item, index) => (
-                                <ItemSquare onClick={()=>setClickedItem(item)} item={item} key={item.id + index}/>
+                                <ItemSquare onClick={()=>setClickedItem(item)} item={item} key={item.name + index}/>
                             ))}
                         </div>
                     </div>
