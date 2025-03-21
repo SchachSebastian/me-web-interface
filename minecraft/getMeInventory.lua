@@ -2,6 +2,15 @@ ae2 = peripheral.wrap("bottom")
 
 local storage = {}
 
+local function tableLength(T)
+    local count = 0
+    for _ in pairs(T) do
+        count = count + 1
+    end
+    return count
+end
+
+
 local function getStoredItemIndex(item)
     for index, stored in ipairs(storage) do
         if stored.nbt == item.nbt then
@@ -15,8 +24,8 @@ end
 local function getItemDiff(old, new)
     local diff = {}
 
-    for key, value in pairs(old) do
-        if value ~= new[key] then
+    for key, value in pairs(new) do
+        if value ~= old[key] then
             diff[key] = new[key]
         end
     end
@@ -49,12 +58,12 @@ local function getMeItems()
         }
 
         local diff = getItemDiff(saved_item, new_item)
-        if #diff ~= 0 then
+        if tableLength(diff) ~= 0 then
             diff.nbt = new_item.nbt
             table.insert(list, item)
         end
         if saved_item_index ~= nil then
-            table.remove(storage, saved_item_index)
+            table.insert(storage, saved_item)
         end
     end
 
