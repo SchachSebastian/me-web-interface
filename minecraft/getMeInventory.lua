@@ -13,7 +13,7 @@ end
 
 local function getStoredItemIndex(item)
     for index, stored in ipairs(storage) do
-        if stored.nbt == item.nbt then
+        if stored.nbt == item.nbt and stored.name == item.name then
             return index
         end
     end
@@ -63,14 +63,14 @@ local function getMeItems()
             table.insert(list, item)
         end
         if saved_item_index ~= nil then
-            table.insert(storage, saved_item)
+            table.insert(storage, new_item)
         end
     end
 
     for _, item in ipairs(storage) do
         local exists = false
         for index, new in ipairs(items) do
-            if new.nbt == item.nbt then
+            if new.nbt == item.nbt and new.name==item.name then
                 exists = true
             end
         end
@@ -84,7 +84,7 @@ local function getMeItems()
         end
     end
 
-    print(textutils.parseJSON(list))
+    print(textutils.serialiseJSON(list))
 
     return list
 end
