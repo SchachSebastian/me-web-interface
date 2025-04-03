@@ -2,22 +2,33 @@ local getMeItems = require("getMeInventory")
 
 print("Started")
 
-local url = "<url-goes-here>"
+local config = require("config")
+local url = config.url
+local maxItemsPerMessage = config.maxItemsPerMessage
 local headers = {}
-headers["Secret"] = "<your-secret-goes-here>"
+headers["Secret"] = config.secret
 
 local ws = http.websocket(url, headers)
 
-function wsHandler()
-    sleep(1)
-    local message = {
-        type = "item-update",
-        data = getMeItems()
-    }
-    local serialisedMessage = textutils.serialiseJSON(message)
-    if ws then
-       ws.send(serialisedMessage)
+local function sendList(list, type)
+    for i = 1, #list, maxItemsPerMessage do
+        local chunk = {}
+        for j = i, math.min(i + maxItemsPerMessage - 1, #list) do
+            table.insert(chunk, list[j])
+        end
+        local message = {
+            type = type,
+            data = chunk
+        }
+        local serialisedMessage = textutils.serialiseJSON(message, {
+            allow_repetitions = true
+        })
+        ws.send(serialisedMessage)
     end
+end
+
+local function wsHandler()
+    sendList(getMeItems(), "item-update")
 end
 
 while true do

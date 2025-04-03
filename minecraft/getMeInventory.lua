@@ -1,6 +1,23 @@
-ae2 = peripheral.wrap("bottom")
-
+local ae2 = peripheral.wrap("bottom")
 local storage = {}
+
+local function getItemKey(item)
+    return item.name .. "|" .. textutils.serialiseJSON(item.components, {
+        allow_repetitions = true,
+    })
+end
+
+local function getItemDiff(old, new)
+    local diff = {}
+
+    for key, value in pairs(new) do
+        if key ~= "components" and value ~= old[key] then
+            diff[key] = new[key]
+        end
+    end
+
+    return diff
+end
 
 local function tableLength(T)
     local count = 0
@@ -10,84 +27,53 @@ local function tableLength(T)
     return count
 end
 
-
-local function getStoredItemIndex(item)
-    for index, stored in ipairs(storage) do
-        if stored.nbt == item.nbt and stored.name == item.name then
-            return index
-        end
-    end
-    if(item.nbt ~= nil) then
-        print(textutils.serialiseJSON(diff))
-    end
-
-    return nil
-end
-
-local function getItemDiff(old, new)
-    local diff = {}
-
-    for key, value in pairs(new) do
-        if value ~= old[key] then
-            diff[key] = new[key]
-        end
-    end
-
-    return diff
-end
-
 local function getMeItems()
     local items = ae2.listItems()
-
     local list = {}
+    local seenItems = {}
 
     for _, item in ipairs(items) do
-        local saved_item_index = getStoredItemIndex(item)
-        local saved_item
+        local item_key = getItemKey(item)
+        local saved_item = storage[item_key] or {}
 
-        if saved_item_index == nil then
-            saved_item = {}
-        else
-            saved_item = storage[saved_item_index]
+        local components = nil
+        if (next(item.components)) then
+            components = item.components
         end
 
         local new_item = {
             name = item.name,
             fingerprint = item.fingerprint,
-            amount = item.count,
+            count = item.count,
             displayName = item.displayName,
-            nbt = item.nbt,
+            components = components,
             isCraftable = item.isCraftable
         }
 
         local diff = getItemDiff(saved_item, new_item)
-        if tableLength(diff) ~= 0 then
-            diff.nbt = new_item.nbt
-            table.insert(list, item)
+        if next(diff) then
+            diff.name = new_item.name
+            diff.components = new_item.components
+            table.insert(list, diff)
         end
-        if saved_item_index ~= nil then
-            table.insert(storage, new_item)
-        end
+        storage[item_key] = new_item
+        seenItems[item_key] = true
     end
 
-    for _, item in ipairs(storage) do
-        local exists = false
-        for index, new in ipairs(items) do
-            if new.nbt == item.nbt and new.name==item.name then
-                exists = true
-            end
-        end
-        if not exists then
-            local not_existing_item = {
-                nbt = item.nbt,
+    for key, item in ipairs(storage) do
+        if not seenItems[key] then
+            
+            table.insert(list, {
+                components = item.components,
+                name = item.name,
                 amount = 0
-            }
-            table.insert(list, not_existing_item)
-            table.remove(storage, getStoredItemIndex(not_existing_item))
+            })
+            storage[key] = nil
         end
     end
 
-    print(textutils.serialiseJSON(list))
+    print(tableLength(storage), "in storage")
+    print("Sending", #list, "items")
 
     return list
 end
