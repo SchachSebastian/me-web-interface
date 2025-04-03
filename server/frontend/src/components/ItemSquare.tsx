@@ -13,6 +13,7 @@ interface Props {
 export const ItemSquare = (props: Props) => {
     const mod = props.item.name.split(":")[0].toLowerCase();
     const [mouseHover, setMouseHover] = useState(false);
+    const [useFallbackImage, setUseFallbackImage] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const handleClick = () => {
         if (props.onClick && props.item.isCraftable && false) {
@@ -29,6 +30,10 @@ export const ItemSquare = (props: Props) => {
     let displayName = props.item.displayName.trim();
     if (displayName.startsWith("[")) displayName = displayName.substring(1);
     if (displayName.endsWith("]")) displayName = displayName.substring(0, displayName.length - 1);
+
+    const handleImageUnavailable = useFallbackImage ? undefined : () => setUseFallbackImage(true);
+    let imageSrc = "/assets/" + props.item.name.replace(":", "/") + ".png";
+    if (useFallbackImage) imageSrc = "/missingItem.webp";
     return (
         <div
             style={props.style}
@@ -51,11 +56,8 @@ export const ItemSquare = (props: Props) => {
                             imageRendering: "pixelated",
                         }}
                         className="object-cover w-full h-auto"
-                        src={
-                            "/assets/" +
-                            props.item.name.replace(":", "/") +
-                            ".png"
-                        }
+                        onError={handleImageUnavailable}
+                        src={imageSrc}
                         alt={displayName}
                     />
                 </div>
