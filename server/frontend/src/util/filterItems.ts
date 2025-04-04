@@ -4,7 +4,7 @@ const matchesItem = (item: Item, term: string) => {
     if (term.startsWith("#")) {
         if (!item.components) return false;
         return JSON.stringify(item.components).toLowerCase().includes(term.slice(1));
-    } else if (term.startsWith("@")) {	
+    } else if (term.startsWith("@")) {
         return item.name.split(":")[0].toLowerCase().includes(term.slice(1));
     } else {
         return item.displayName.toLowerCase().includes(term);

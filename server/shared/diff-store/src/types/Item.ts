@@ -3,6 +3,6 @@ export type Item = {
     displayName: string;
     count: number;
     fingerprint: string;
-    components?: any[];
+    components?: any;
     isCraftable: boolean;
 };

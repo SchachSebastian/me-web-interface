@@ -1,8 +1,9 @@
-
-import {formatAmount} from "../helper/formatAmount";
-import ReactDOM from "react-dom";
-import {useRef, useState} from "react";
+import { isEnchantedItem } from "../util/isEnchantedItem";
 import { Item } from "diff-store/src/types/Item";
+import { useRef, useState } from "react";
+import ReactDOM from "react-dom";
+import { formatAmount } from "../helper/formatAmount";
+import { AdditionalItemInfo } from "./additionalItemInfo/AdditionalItemInfo";
 
 interface Props {
     item: Item;
@@ -19,9 +20,9 @@ export const ItemSquare = (props: Props) => {
         if (props.onClick && props.item.isCraftable && false) {
             props.onClick();
         }
-    }
-    let top = 0
-    let left = 0
+    };
+    let top = 0;
+    let left = 0;
     if (ref.current) {
         const rect = ref.current.getBoundingClientRect();
         top = rect.bottom + window.scrollY;
@@ -29,9 +30,12 @@ export const ItemSquare = (props: Props) => {
     }
     let displayName = props.item.displayName.trim();
     if (displayName.startsWith("[")) displayName = displayName.substring(1);
-    if (displayName.endsWith("]")) displayName = displayName.substring(0, displayName.length - 1);
+    if (displayName.endsWith("]"))
+        displayName = displayName.substring(0, displayName.length - 1);
 
-    const handleImageUnavailable = useFallbackImage ? undefined : () => setUseFallbackImage(true);
+    const handleImageUnavailable = useFallbackImage
+        ? undefined
+        : () => setUseFallbackImage(true);
     let imageSrc = "/assets/" + props.item.name.replace(":", "/") + ".png";
     if (useFallbackImage) imageSrc = "/missingItem.webp";
     return (
@@ -60,6 +64,52 @@ export const ItemSquare = (props: Props) => {
                         src={imageSrc}
                         alt={displayName}
                     />
+                    {isEnchantedItem(props.item) ? (
+                        <>
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                    width: "100%",
+                                    height: "100%",
+                                    maskImage: `url(${imageSrc})`,
+                                    maskSize: "cover",
+                                    overflow: "hidden",
+                                }}
+                            >
+                                <img
+                                    style={{
+                                        imageRendering: "pixelated",
+                                        rotate: "-45deg",
+                                        scale: "5",
+                                        aspectRatio: 1,
+                                        filter: "sepia(100%) hue-rotate(250deg) contrast(150%)",
+                                        animation:
+                                            "dropDown 10s infinite alternate ease-in-out",
+                                        position: "absolute",
+                                        opacity: "0.2",
+                                    }}
+                                    src="glint.png"
+                                    alt={displayName}
+                                />
+                            </div>
+                            <style>
+                                {`
+          @keyframes dropDown {
+            from {
+              transform: translate(20%, 0%);
+            }
+            to {
+              transform: translate(-20%,0%);
+            }
+          }
+        `}
+                            </style>
+                        </>
+                    ) : (
+                        <></>
+                    )}
                 </div>
             </div>
             {ReactDOM.createPortal(
@@ -79,8 +129,15 @@ export const ItemSquare = (props: Props) => {
                         <div className="text-gray-400 font-mono text-sm mb-1">
                             {props.item.name}
                         </div>
+                        {/* <div className="text-gray-400 font-mono text-sm mb-1">
+                            {JSON.stringify(props.item.components, null, 2)}
+                        </div>  */}
+                        <AdditionalItemInfo item={props.item} />
                         <div className="text-blue-400 text-lg italic">
                             {mod}
+                        </div>
+                        <div className="text-gray-400 font-mono text-xs mb-1">
+                            {props.item.fingerprint}
                         </div>
                     </div>
                 </div>,
@@ -88,4 +145,4 @@ export const ItemSquare = (props: Props) => {
             )}
         </div>
     );
-}
+};
