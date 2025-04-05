@@ -1,4 +1,4 @@
-import { updateItemStorage } from "diff-store/src/storage/items";
+import { updateItemStorage, $items } from 'diff-store/src/storage/items';
 import { Message } from "diff-store/src/types/Message";
 import { MessageCallback } from "diff-store/src/types/MessageCallback";
 import dotenv from "dotenv";
@@ -10,6 +10,16 @@ dotenv.config();
 
 let minecraftSocket: WebSocket | null = null;
 let messageCallbacks: MessageCallback[] = [
+    {
+        type: "init",
+        callback: (data: any) => {
+            console.log("Received INIT message");
+            $items.set([]);
+            sendClientMessage({
+                type: "reset"
+            });
+        },
+    },
     {
         type: "item-update",
         callback: (data: any) => {

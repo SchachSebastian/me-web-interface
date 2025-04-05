@@ -1,13 +1,14 @@
+import { $items } from "diff-store/src/storage/items";
 import { Item } from "diff-store/src/types/Item";
 import { useState } from "react";
 import { VirtuosoGrid } from "react-virtuoso";
 import Dialog from "./components/Dialog";
 import { ItemSquare } from "./components/ItemSquare";
 import NumberInput from "./components/NumberInput";
-import { useMeItems } from "./requests/useMeItems";
+import { useMeItems, useResetMessage } from "./requests/useMeItems";
 import useVirtuosoComponents from "./useVirtuosoComponents";
-import { useWebSocket } from "./WebsocketProvider";
 import { filterItems } from "./util/filterItems";
+import { useWebSocket } from "./WebsocketProvider";
 
 function App() {
     const [searchText, setSearchText] = useState("");
@@ -16,10 +17,13 @@ function App() {
 
     const items = useMeItems();
 
-    const gridComponents = useVirtuosoComponents();
-    
+    useResetMessage(() => $items.set([]));
 
-    const filteredItems = filterItems(items, searchText).toSorted((a, b) => b.count - a.count);;
+    const gridComponents = useVirtuosoComponents();
+
+    const filteredItems = filterItems(items, searchText).toSorted(
+        (a, b) => b.count - a.count
+    );
 
     console.log(filteredItems.length);
     const onCraftItem = (value: number) => {
@@ -55,11 +59,12 @@ function App() {
                             className="bg-[#8b8b8b] rounded px-3 py-1 text-white text-4xl min-w-10 max-w-4/12"
                         />
                     </div>
-                    <div
-                        className="flex-1"
-                    >
+                    <div className="flex-1">
                         <VirtuosoGrid
-                            computeItemKey={(index) => filteredItems[index].name+JSON.stringify(filteredItems[index].components)}
+                            computeItemKey={(index) =>
+                                filteredItems[index].name +
+                                JSON.stringify(filteredItems[index].components)
+                            }
                             totalCount={filteredItems.length}
                             components={gridComponents}
                             itemContent={(index) => {

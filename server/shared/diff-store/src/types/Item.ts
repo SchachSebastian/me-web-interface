@@ -5,4 +5,6 @@ export type Item = {
     fingerprint: string;
     components?: any;
     isCraftable: boolean;
+    isFluid?: boolean;
+    isGas?: boolean;
 };

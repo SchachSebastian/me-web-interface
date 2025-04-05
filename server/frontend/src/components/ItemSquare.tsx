@@ -68,6 +68,7 @@ export const ItemSquare = (props: Props) => {
                         <>
                             <div
                                 style={{
+                                    pointerEvents: "none",
                                     position: "absolute",
                                     top: 0,
                                     left: 0,
@@ -86,9 +87,9 @@ export const ItemSquare = (props: Props) => {
                                         aspectRatio: 1,
                                         filter: "sepia(100%) hue-rotate(250deg) contrast(150%)",
                                         animation:
-                                            "dropDown 10s infinite alternate ease-in-out",
+                                            "dropDown 8s infinite alternate ease-in-out",
                                         position: "absolute",
-                                        opacity: "0.2",
+                                        opacity: "0.3",
                                     }}
                                     src="glint.png"
                                     alt={displayName}

@@ -1,4 +1,4 @@
-local getMeItems = require("getMeInventory")
+local getMeInventory = require("getMeItems")
 
 print("Started")
 
@@ -8,7 +8,7 @@ local maxItemsPerMessage = config.maxItemsPerMessage
 local headers = {}
 headers["Secret"] = config.secret
 
-local ws = http.websocket(url, headers)
+local ws
 
 local function sendList(list, type)
     for i = 1, #list, maxItemsPerMessage do
@@ -28,9 +28,18 @@ local function sendList(list, type)
 end
 
 local function wsHandler()
-    sendList(getMeItems(), "item-update")
+    sendList(getMeInventory(), "item-update")
 end
 
+-- Startup delay
+sleep(5)
+
+local initMessage = textutils.serialiseJSON({
+    type = "init"
+})
+
 while true do
+    ws = http.websocket(url, headers)
+    ws.send(initMessage)
     pcall(wsHandler)
 end
