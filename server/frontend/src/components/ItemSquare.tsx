@@ -58,6 +58,7 @@ export const ItemSquare = (props: Props) => {
                     <img
                         style={{
                             imageRendering: "pixelated",
+                            pointerEvents: "none",
                         }}
                         className="object-cover w-full h-auto"
                         onError={handleImageUnavailable}

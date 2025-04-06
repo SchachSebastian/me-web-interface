@@ -3,6 +3,9 @@ local ae2 = peripheral.wrap("bottom")
 local storage = {}
 
 local function getItemKey(item)
+    if(item.components == nil) then
+        return item.name
+    end
     return item.name .. "|" .. textutils.serialiseJSON(item.components, {
         allow_repetitions = true
     })
@@ -51,7 +54,7 @@ local function getNewInventory()
         local new_fluid = {
             name = fluid.name,
             fingerprint = fluid.fingerprint,
-            count = fluid.count,
+            count = fluid.count/1000,
             displayName = fluid.displayName,
             components = components,
             isCraftable = fluid.isCraftable,
@@ -62,21 +65,15 @@ local function getNewInventory()
 
     local gases = ae2.listGases()
     for _, gas in ipairs(gases) do
-        local components = nil
-        if (next(gas.components)) then
-            components = gas.components
-        end
-
-        local new_fluid = {
-            name = gas.name,
-            fingerprint = gas.fingerprint,
-            count = gas.count,
+        local new_gas = {
+            name = gas.name,    
+            fingerprint = gas.name,
+            count = gas.count/1000,
             displayName = gas.displayName,
-            components = components,
-            isCraftable = gas.isCraftable,
+            isCraftable = false,
             isGas = true
         }
-        table.insert(inventory, new_fluid)
+        table.insert(inventory, new_gas)
     end
 
     return inventory

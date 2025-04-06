@@ -17,7 +17,7 @@ const prefixes = [{
 export const formatAmount = (item: Item) => {
     let amount = item.count;
     let prefix = 0;
-    while(amount >= prefixes[prefix].nextAt && prefix < prefixes.length) {
+    while (prefix < prefixes.length-1 && amount >= prefixes[prefix].nextAt) {
         amount /= 1000.0;
         prefix++;
     }
