@@ -26,6 +26,21 @@ local function deepEqual(a, b)
     end
 end
 
+local function cleanDisplayName(displayName)
+    displayName = displayName:match("^%s*(.-)%s*$")
+
+    if displayName:sub(1, 1) == "[" then
+        displayName = displayName:sub(2)
+    end
+
+    if displayName:sub(-1) == "]" then
+        displayName = displayName:sub(1, -2)
+    end
+
+    return displayName
+end
+
+
 local function getItemDiff(old, new)
     local diff = {}
 
@@ -53,7 +68,7 @@ local function getNewInventory()
             name = item.name,
             fingerprint = item.fingerprint,
             count = item.count,
-            displayName = item.displayName,
+            displayName = cleanDisplayName(item.displayName),
             components = components,
             isCraftable = item.isCraftable
         }
@@ -72,7 +87,7 @@ local function getNewInventory()
             name = fluid.name,
             fingerprint = fluid.fingerprint,
             count = fluid.count/1000,
-            displayName = fluid.displayName,
+            displayName = cleanDisplayName(fluid.displayName),
             components = components,
             isCraftable = fluid.isCraftable,
             isFluid = true
@@ -86,7 +101,7 @@ local function getNewInventory()
             id = gas.name .. "#gas",
             name = gas.name,
             count = gas.count/1000,
-            displayName = gas.displayName,
+            displayName = cleanDisplayName(gas.displayName),
             isCraftable = false,
             isGas = true
         }

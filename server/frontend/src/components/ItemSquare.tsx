@@ -1,19 +1,17 @@
-import { isEnchantedItem } from "../util/isEnchantedItem";
 import { Item } from "diff-store/src/types/Item";
 import { useRef, useState } from "react";
-import ReactDOM from "react-dom";
-import { formatAmount } from "../helper/formatAmount";
-import { AdditionalItemInfo } from "./additionalItemInfo/AdditionalItemInfo";
+import { formatCount } from "../helper/formatCount";
+import { isEnchantedItem } from "../util/isEnchantedItem";
 
 interface Props {
     item: Item;
     onClick?: () => void;
+    setHoveredItem?: (item: Item|undefined, ref?: React.RefObject<HTMLDivElement>) => void;
     style?: React.CSSProperties;
 }
 
 export const ItemSquare = (props: Props) => {
-    const mod = props.item.name.split(":")[0].toLowerCase();
-    const [mouseHover, setMouseHover] = useState(false);
+    
     const [useFallbackImage, setUseFallbackImage] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const handleClick = () => {
@@ -21,17 +19,17 @@ export const ItemSquare = (props: Props) => {
             props.onClick();
         }
     };
-    let top = 0;
-    let left = 0;
-    if (ref.current) {
-        const rect = ref.current.getBoundingClientRect();
-        top = rect.bottom + window.scrollY;
-        left = rect.left + window.scrollX;
+
+    const handlePointerEnter = () => {
+        if (props.setHoveredItem) {
+            props.setHoveredItem(props.item, ref);
+        }
     }
-    let displayName = props.item.displayName.trim();
-    if (displayName.startsWith("[")) displayName = displayName.substring(1);
-    if (displayName.endsWith("]"))
-        displayName = displayName.substring(0, displayName.length - 1);
+    const handlePointerLeave = () => {
+        if (props.setHoveredItem) {
+            props.setHoveredItem(undefined, ref);
+        }
+    }
 
     const handleImageUnavailable = useFallbackImage
         ? undefined
@@ -43,15 +41,15 @@ export const ItemSquare = (props: Props) => {
             style={props.style}
             className="flex-grow relative inline-block"
             onClick={handleClick}
-            onPointerEnter={() => setMouseHover(true)}
-            onPointerLeave={() => setMouseHover(false)}
+            onPointerEnter={handlePointerEnter}
+            onPointerLeave={handlePointerLeave}
             ref={ref}
         >
             <div className="relative cursor-pointer bg-[#8b8b8b] aspect-square overflow-hidden">
-                <div className="absolute bottom-1 right-2 z-10 text-white font-bold text-2xl">
-                    {formatAmount(props.item)}
+                <div className="absolute bottom-1 right-2 z-10 text-white font-bold text-lg sm:text-2xl">
+                    {formatCount(props.item)}
                 </div>
-                <div className="absolute top-0 right-2 z-10 text-white font-bold text-3xl">
+                <div className="absolute top-0 right-2 z-10 text-white font-bold text-xl sm:text-3xl">
                     {props.item.isCraftable ? "+" : ""}
                 </div>
                 <div className="overflow-hidden h-full w-full p-1 relative">
@@ -63,7 +61,7 @@ export const ItemSquare = (props: Props) => {
                         className="object-cover w-full h-auto"
                         onError={handleImageUnavailable}
                         src={imageSrc}
-                        alt={displayName}
+                        alt={props.item.displayName}
                     />
                     {isEnchantedItem(props.item) ? (
                         <>
@@ -93,58 +91,14 @@ export const ItemSquare = (props: Props) => {
                                         opacity: "0.3",
                                     }}
                                     src="glint.png"
-                                    alt={displayName}
                                 />
                             </div>
-                            <style>
-                                {`
-          @keyframes dropDown {
-            from {
-              transform: translate(20%, 0%);
-            }
-            to {
-              transform: translate(-20%,0%);
-            }
-          }
-        `}
-                            </style>
                         </>
                     ) : (
                         <></>
                     )}
                 </div>
             </div>
-            {ReactDOM.createPortal(
-                <div
-                    style={{
-                        top: top,
-                        left: left,
-                        zIndex: 9999,
-                        pointerEvents: "none",
-                    }}
-                    className={"absolute " + (mouseHover ? "" : "hidden")}
-                >
-                    <div className="bg-gray-900/90 backdrop-blur-sm p-4 rounded border-4 border-[#250259]">
-                        <div className="text-white text-xl font-bold mb-1 tr">
-                            {displayName}
-                        </div>
-                        <div className="text-gray-400 font-mono text-sm mb-1">
-                            {props.item.name}
-                        </div>
-                        {/* <div className="text-gray-400 font-mono text-sm mb-1">
-                            {JSON.stringify(props.item.components, null, 2)}
-                        </div>  */}
-                        <AdditionalItemInfo item={props.item} />
-                        <div className="text-blue-400 text-lg italic">
-                            {mod}
-                        </div>
-                        <div className="text-gray-400 font-mono text-xs mb-1">
-                            {props.item.fingerprint}
-                        </div>
-                    </div>
-                </div>,
-                document.body
-            )}
         </div>
     );
 };

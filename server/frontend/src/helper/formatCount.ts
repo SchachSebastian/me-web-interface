@@ -14,7 +14,7 @@ const prefixes = [{
     prefix: "B",
     nextAt: 1_000,
 }]
-export const formatAmount = (item: Item) => {
+export const formatCount = (item: Item) => {
     let amount = item.count;
     let prefix = 0;
     while (prefix < prefixes.length-1 && amount >= prefixes[prefix].nextAt) {

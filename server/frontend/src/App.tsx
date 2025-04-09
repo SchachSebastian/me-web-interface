@@ -10,10 +10,14 @@ import useVirtuosoComponents from "./useVirtuosoComponents";
 import { filterItems } from "./util/filterItems";
 import { useWebSocket } from "./WebsocketProvider";
 import { useQueryParam } from "./hooks/useQueryParam";
+import { ItemTooltip } from "./components/ItemTooltip";
 
 function App() {
     const [searchText, setSearchText] = useQueryParam("search", "");
     const [clickedItem, setClickedItem] = useState<Item>();
+    const [hoveredItem, setHoveredItem] = useState<Item>();
+    const [hoveredItemRef, setHoveredItemRef] =
+        useState<React.RefObject<HTMLDivElement>>();
     const socket = useWebSocket();
 
     const items = useMeItems();
@@ -44,15 +48,18 @@ function App() {
 
     return (
         <>
-            <div className="bg-minecraft-bg bg-cover bg-center w-screen h-screen p-[2%]">
+            <div className="bg-minecraft-bg bg-cover bg-center w-full h-full p-[2%]">
                 <div className="w-full h-full bg-[#c6c6c6] border-white border-8 rounded flex flex-col overflow-hidden p-5">
                     <div className="flex flex-wrap gap-4 justify-between items-center bg-[#c6c6c6] pb-5">
-                        <span className="text-[#3e3e3e] text-4xl font-bold">
+                        <button
+                            className="text-[#3e3e3e] text-4xl font-bold"
+                            onClick={() => setSearchText("")}
+                        >
                             Terminal
-                        </span>
+                        </button>
                         <input
                             type="text"
-                            value={searchText??""}
+                            value={searchText ?? ""}
                             onChange={(event) => {
                                 console.log(event.target.value);
                                 setSearchText(event.target.value);
@@ -70,6 +77,13 @@ function App() {
                                 return (
                                     <ItemSquare
                                         onClick={() => setClickedItem(item)}
+                                        setHoveredItem={(
+                                            item: Item | undefined,
+                                            ref?: React.RefObject<HTMLDivElement>
+                                        ) => {
+                                            setHoveredItem(item);
+                                            setHoveredItemRef(ref);
+                                        }}
                                         item={item}
                                     />
                                 );
@@ -87,6 +101,9 @@ function App() {
             >
                 <NumberInput onValueSubmit={onCraftItem} />
             </Dialog>
+            {hoveredItem && hoveredItemRef ? (
+                <ItemTooltip item={hoveredItem} itemRef={hoveredItemRef} />
+            ) : null}
         </>
     );
 }
