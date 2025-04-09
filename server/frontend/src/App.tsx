@@ -61,10 +61,7 @@ function App() {
                     </div>
                     <div className="flex-1">
                         <VirtuosoGrid
-                            computeItemKey={(index) =>
-                                filteredItems[index].name +
-                                JSON.stringify(filteredItems[index].components)
-                            }
+                            computeItemKey={(index) => filteredItems[index].id}
                             totalCount={filteredItems.length}
                             components={gridComponents}
                             itemContent={(index) => {

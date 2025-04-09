@@ -1,4 +1,4 @@
-local getMeInventory = require("getMeItems")
+local getMeInventoryDiff = require("getMeItems")
 
 print("Started")
 
@@ -28,7 +28,7 @@ local function sendList(list, type)
 end
 
 local function wsHandler()
-    sendList(getMeInventory(), "item-update")
+    sendList(getMeInventoryDiff(), "item-update")
 end
 
 -- Startup delay
