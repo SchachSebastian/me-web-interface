@@ -9,9 +9,10 @@ import { useMeItems, useResetMessage } from "./requests/useMeItems";
 import useVirtuosoComponents from "./useVirtuosoComponents";
 import { filterItems } from "./util/filterItems";
 import { useWebSocket } from "./WebsocketProvider";
+import { useQueryParam } from "./hooks/useQueryParam";
 
 function App() {
-    const [searchText, setSearchText] = useState("");
+    const [searchText, setSearchText] = useQueryParam("search", "");
     const [clickedItem, setClickedItem] = useState<Item>();
     const socket = useWebSocket();
 
@@ -21,7 +22,7 @@ function App() {
 
     const gridComponents = useVirtuosoComponents();
 
-    const filteredItems = filterItems(items, searchText).toSorted(
+    const filteredItems = filterItems(items, searchText??"").toSorted(
         (a, b) => b.count - a.count
     );
 
@@ -51,7 +52,7 @@ function App() {
                         </span>
                         <input
                             type="text"
-                            value={searchText}
+                            value={searchText??""}
                             onChange={(event) => {
                                 console.log(event.target.value);
                                 setSearchText(event.target.value);
