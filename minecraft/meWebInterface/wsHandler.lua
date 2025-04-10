@@ -28,7 +28,7 @@ local function sendList(list, type)
 end
 
 local function wsHandler()
-    sendList(getMeInventoryDiff(), "item-update")
+    sendList(getMeInventoryDiff(), "inventory-update")
 end
 
 -- Startup delay

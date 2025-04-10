@@ -134,7 +134,7 @@ local function getMeInventoryDiff()
 
             table.insert(list, {
                 id = item.id,
-                amount = 0
+                count = 0
             })
             storage[key] = nil
         end

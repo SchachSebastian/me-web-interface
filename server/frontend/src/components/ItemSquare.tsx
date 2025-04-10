@@ -1,5 +1,5 @@
 import { Item } from "diff-store/src/types/Item";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatCount } from "../helper/formatCount";
 import { isEnchantedItem } from "../util/isEnchantedItem";
 
@@ -27,9 +27,17 @@ export const ItemSquare = (props: Props) => {
     }
     const handlePointerLeave = () => {
         if (props.setHoveredItem) {
-            props.setHoveredItem(undefined, ref);
+            props.setHoveredItem(undefined);
         }
     }
+
+    useEffect(() => {
+        return () => {
+            if (props.setHoveredItem) {
+                props.setHoveredItem(undefined);
+            }
+        }
+    }, []);
 
     const handleImageUnavailable = useFallbackImage
         ? undefined

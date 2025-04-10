@@ -12,7 +12,7 @@ let minecraftSocket: WebSocket | null = null;
 let messageCallbacks: MessageCallback[] = [
     {
         type: "init",
-        callback: (data: any) => {
+        callback: () => {
             console.log("Received INIT message");
             $items.set([]);
             sendClientMessage({
@@ -21,7 +21,7 @@ let messageCallbacks: MessageCallback[] = [
         },
     },
     {
-        type: "item-update",
+        type: "inventory-update",
         callback: (data: any) => {
             console.log("received updates: " + data.length);
             updateItemStorage(data);

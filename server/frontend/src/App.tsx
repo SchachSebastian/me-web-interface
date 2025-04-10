@@ -51,12 +51,12 @@ function App() {
             <div className="bg-minecraft-bg bg-cover bg-center w-full h-full p-[2%]">
                 <div className="w-full h-full bg-[#c6c6c6] border-white border-8 rounded flex flex-col overflow-hidden p-5">
                     <div className="flex flex-wrap gap-4 justify-between items-center bg-[#c6c6c6] pb-5">
-                        <button
-                            className="text-[#3e3e3e] text-4xl font-bold"
+                        <div
+                            className="text-[#3e3e3e] text-4xl font-bold hover:cursor-pointer"
                             onClick={() => setSearchText("")}
                         >
                             Terminal
-                        </button>
+                        </div>
                         <input
                             type="text"
                             value={searchText ?? ""}
