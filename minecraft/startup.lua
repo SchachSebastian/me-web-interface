@@ -1,1 +1,1 @@
-shell.run('wsHandler.lua')
+shell.run('meWebInterface/wsHandler.lua')

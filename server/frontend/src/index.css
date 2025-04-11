@@ -11,3 +11,29 @@
         transform: translate(-20%, 0%);
     }
 }
+
+html {
+    font-size: 12px;
+}
+
+/* sm: >= 640px */
+@media (min-width: 640px) {
+    html {
+        font-size: 13.333px;
+    }
+}
+
+/* md: >= 768px */
+@media (min-width: 768px) {
+    html {
+        font-size: 14.666px;
+    }
+}
+
+/* lg: >= 1024px */
+@media (min-width: 1024px) {
+    html {
+        font-size: 16px;
+        /* default Tailwind base */
+    }
+}

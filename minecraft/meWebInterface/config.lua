@@ -1,6 +1,6 @@
 local config = {
     url = "",
-    secret = "",
+    secret = "secret",
     maxItemsPerMessage = 100,
 }
 

@@ -1,6 +1,6 @@
 import { $items } from "diff-store/src/storage/items";
 import { Item } from "diff-store/src/types/Item";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { VirtuosoGrid } from "react-virtuoso";
 import Dialog from "./components/Dialog";
 import { ItemSquare } from "./components/ItemSquare";
@@ -23,6 +23,8 @@ function App() {
     const items = useMeItems();
 
     useResetMessage(() => $items.set([]));
+
+    const ref = useRef<HTMLDivElement>(null);
 
     const gridComponents = useVirtuosoComponents();
 
@@ -67,7 +69,7 @@ function App() {
                             className="bg-[#8b8b8b] rounded px-3 py-1 text-white text-4xl min-w-10 max-w-4/12"
                         />
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1" ref={ref}>
                         <VirtuosoGrid
                             computeItemKey={(index) => filteredItems[index].id}
                             totalCount={filteredItems.length}
@@ -102,7 +104,7 @@ function App() {
                 <NumberInput onValueSubmit={onCraftItem} />
             </Dialog>
             {hoveredItem && hoveredItemRef ? (
-                <ItemTooltip item={hoveredItem} itemRef={hoveredItemRef} />
+                <ItemTooltip item={hoveredItem} itemRef={hoveredItemRef} containerRef={ref}/>
             ) : null}
         </>
     );

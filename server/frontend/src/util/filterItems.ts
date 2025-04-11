@@ -6,6 +6,20 @@ const matchesItem = (item: Item, term: string) => {
         return JSON.stringify(item.components).toLowerCase().includes(term.slice(1));
     } else if (term.startsWith("@")) {
         return item.name.split(":")[0].toLowerCase().includes(term.slice(1));
+    } else if (term.startsWith("$")) {
+        if ("item".startsWith(term.slice(1))) {
+            return !item.isFluid && !item.isGas;
+        }
+        if ("fluid".startsWith(term.slice(1))) {
+            return item.isFluid as boolean;
+        }
+        if ("gas".startsWith(term.slice(1))) {
+            return item.isGas as boolean;
+        }
+        if ("craftable".startsWith(term.slice(1))) {
+            return item.isCraftable as boolean;
+        }
+        return false;
     } else {
         return item.displayName.toLowerCase().includes(term);
     }

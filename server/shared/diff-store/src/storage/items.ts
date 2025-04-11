@@ -9,7 +9,7 @@ export const updateItemStorage = (
     if (updates === undefined || updates.length === 0) {
         return;
     }
-    console.log("Removing "+ updates.filter(u => u.count === 0).length + " items from storage");
+    console.log("Removing "+ updates.filter(u => u.count === -1).length + " items from storage");
     const new_items = $items
         .get()
         .map((item) => {
@@ -19,7 +19,7 @@ export const updateItemStorage = (
             }
             return item;
         })
-        .filter((item) => item.count !== 0);
+        .filter((item) => item.count !== -1);
     updates
         .filter(
             (update) =>

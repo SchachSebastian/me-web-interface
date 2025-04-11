@@ -1,4 +1,4 @@
-local ae2 = peripheral.wrap("bottom")
+local ae2 = peripheral.find("meBridge")
 
 local storage = {}
 
@@ -129,14 +129,14 @@ local function getMeInventoryDiff()
         seenItems[item_key] = true
     end
 
-    for key, item in ipairs(storage) do
-        if not seenItems[key] then
+    for _, item in pairs(storage) do
+        if not seenItems[item.id] then
 
             table.insert(list, {
                 id = item.id,
-                count = 0
+                count = -1
             })
-            storage[key] = nil
+            storage[item.id] = nil
         end
     end
 
@@ -145,4 +145,11 @@ local function getMeInventoryDiff()
     return list
 end
 
-return getMeInventoryDiff;
+local function resetStorage()
+    storage = {}
+end
+
+return {
+    getMeInventoryDiff = getMeInventoryDiff,
+    resetStorage = resetStorage,
+};

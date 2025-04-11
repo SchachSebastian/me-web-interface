@@ -6,6 +6,7 @@ import { AdditionalItemInfo } from "./additionalItemInfo/AdditionalItemInfo";
 type Props = {
     item: Item;
     itemRef: React.RefObject<HTMLDivElement>;
+    containerRef: React.RefObject<HTMLDivElement>;
 };
 export const ItemTooltip = (props: Props) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -16,8 +17,11 @@ export const ItemTooltip = (props: Props) => {
         let top = 0;
         let left = 0;
         if (props.itemRef.current) {
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
+            const containerRect =
+                props.containerRef.current?.getBoundingClientRect();
+            const containerMaxX =
+                (containerRect?.width ?? 0) + (containerRect?.left ?? 0);
+            const containerMaxY = (containerRect?.height ?? 0) + (containerRect?.top ?? 0);
             const tooltipRect = ref.current?.getBoundingClientRect();
             console.log("Tooltip rect", tooltipRect);
             const tooltipWidth = tooltipRect?.width ?? 0;
@@ -26,11 +30,11 @@ export const ItemTooltip = (props: Props) => {
             top = rect.bottom + window.scrollY;
             left = rect.left + window.scrollX;
 
-            if (top + tooltipHeight > windowHeight) {
-                top -= top + tooltipHeight - windowHeight;
+            if (top + tooltipHeight > containerMaxY) {
+                top -= top + tooltipHeight - containerMaxY;
             }
-            if (left + tooltipWidth > windowWidth) {
-                left -= left + tooltipWidth - windowWidth;
+            if (left + tooltipWidth > containerMaxX) {
+                left -= left + tooltipWidth - containerMaxX;
             }
         }
         setTop(top);
@@ -46,10 +50,11 @@ export const ItemTooltip = (props: Props) => {
                 left: left,
                 zIndex: 9999,
                 pointerEvents: "none",
+                maxWidth: props.containerRef.current?.clientWidth,
             }}
             className="absolute"
         >
-            <div className="bg-gray-900/90 backdrop-blur-sm p-4 rounded border-4 border-[#250259]">
+            <div className="bg-gray-900/90 backdrop-blur-sm p-4 rounded overflow-hidden border-4 border-[#250259]">
                 <div className="text-white text-xl font-bold">
                     {props.item.displayName}
                 </div>

@@ -1,4 +1,6 @@
-local getMeInventoryDiff = require("getMeItems")
+local getMeInventory = require("getMeInventory")
+local getMeInventoryDiff = getMeInventory.getMeInventoryDiff
+local resetStorage = getMeInventory.resetStorage
 
 print("Started")
 
@@ -28,7 +30,9 @@ local function sendList(list, type)
 end
 
 local function wsHandler()
-    sendList(getMeInventoryDiff(), "inventory-update")
+    while true do
+        sendList(getMeInventoryDiff(), "inventory-update")
+    end
 end
 
 -- Startup delay
@@ -41,5 +45,6 @@ local initMessage = textutils.serialiseJSON({
 while true do
     ws = http.websocket(url, headers)
     ws.send(initMessage)
+    resetStorage()
     pcall(wsHandler)
 end
