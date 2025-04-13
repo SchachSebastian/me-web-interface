@@ -1,11 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { useCraftingResponses } from '../requests/useMeItems';
+import { useStore } from "@nanostores/react";
+import { $items } from "diff-store/src/storage/items";
 export const NotificationArea = () => {
     const [craftingResponses, setCraftingResponses] = useCraftingResponses();
+    const items = useStore($items);
 
     const firstResponse = craftingResponses[craftingResponses.length - 1];
     if (!firstResponse) return <></>;
+
+    const item = items.find((item) => item.fingerprint === firstResponse.fingerprint);
+    const name = item?.displayName ?? firstResponse.fingerprint;
 
     const isSuccess = firstResponse.success;
 
@@ -18,15 +24,16 @@ export const NotificationArea = () => {
                     border-2 bg-black/90 text-white animate-achievement
                     font-mono
                 `}
-                onAnimationEnd={() =>
-                    setCraftingResponses([])
-                }
+                onAnimationEnd={() => setCraftingResponses([])}
             >
                 <div className="font-bold text-lg">
-                    Successfully started crafting {firstResponse.fingerprint}
+                    {firstResponse.success
+                        ? "Successfully started crafting"
+                        : "Failed to craft"}{" "}
+                    {name}
                 </div>
                 <div className="text-sm opacity-80">
-                    Crafting {firstResponse.count}
+                    Count: {firstResponse.count}
                 </div>
             </div>
 

@@ -12,6 +12,7 @@ import { useQueryParam } from "./hooks/useQueryParam";
 import { ItemTooltip } from "./components/ItemTooltip";
 import ItemSquare from "./components/ItemSquare";
 import { NotificationArea } from "./components/NotificationArea";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 
 function App() {
     const [searchText, setSearchText] = useQueryParam("search", "");
@@ -19,6 +20,7 @@ function App() {
     const [hoveredItem, setHoveredItem] = useState<Item>();
     const [hoveredItemRef, setHoveredItemRef] =
         useState<React.RefObject<HTMLDivElement>>();
+    const [craftingSecret, setCraftingSecret] = useLocalStorage<string|undefined>("craftingSecret",undefined);
     const socket = useWebSocket();
 
     const items = useMeItems();
@@ -35,6 +37,15 @@ function App() {
 
     console.log(filteredItems.length);
     const onCraftItem = (value: number) => {
+        let secret = craftingSecret;
+        if (craftingSecret === undefined) {
+            const result = window.prompt("Enter crafting secret:");
+            if (result === null) {
+                return;
+            }
+            secret = result;
+            setCraftingSecret(result);
+        }
         if (clickedItem?.isCraftable) {
             socket.send(
                 JSON.stringify({
@@ -42,6 +53,7 @@ function App() {
                     data: {
                         fingerprint: clickedItem.fingerprint,
                         count: value,
+                        secret: secret,
                     },
                 })
             );

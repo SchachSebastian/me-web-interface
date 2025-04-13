@@ -1,4 +1,4 @@
 export type MessageCallback = {
     type: string;
-    callback: (data: any) => void;
-}
+    callback: (data: any) => boolean | void;
+};
