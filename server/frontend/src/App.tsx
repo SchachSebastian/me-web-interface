@@ -35,7 +35,6 @@ function App() {
         (a, b) => b.count - a.count
     );
 
-    console.log(filteredItems.length);
     const onCraftItem = (value: number) => {
         let secret = craftingSecret;
         if (craftingSecret === undefined) {

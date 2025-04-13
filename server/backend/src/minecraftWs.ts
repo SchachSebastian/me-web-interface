@@ -5,8 +5,16 @@ import dotenv from "dotenv";
 import http from "http";
 import WebSocket, { Data } from "ws";
 import { sendClientMessage } from "./clientWs";
+import typia from 'typia';
+import { Item, ItemUpdate } from 'diff-store/src/types/Item';
 
 dotenv.config();
+
+type CraftingResponse = {
+    fingerprint: string;
+    count: number;
+    success: boolean;
+};
 
 let minecraftSocket: WebSocket | null = null;
 let messageCallbacks: MessageCallback[] = [
@@ -23,17 +31,33 @@ let messageCallbacks: MessageCallback[] = [
     {
         type: "inventory-update",
         callback: (data: any) => {
-            console.log("received updates: " + data.length);
-            updateItemStorage(data);
+            if (!typia.is<ItemUpdate[]>(data)) {
+                console.error("Invalid inventory update data:", data);
+                return false;
+            }
+            const validUpdates = data.filter((update) => {
+                const item = $items.get().find((item) => item.id === update.id);
+                if (!item && !typia.is<Item>(update)) {
+                    console.error("Invalid item update:", update);
+                    return false;
+                }
+                return true;
+            });
+            console.log("Received updates: " + validUpdates.length);
+            updateItemStorage(validUpdates);
             sendClientMessage({
                 type: "inventory-update",
-                data,
+                data: validUpdates,
             });
         },
     },
     {
         type: "crafting-response",
         callback: (data: any) => {
+            if (!typia.is<CraftingResponse>(data)) {
+                console.error("Invalid crafting response data:", data);
+                return false;
+            }
             console.log("Received Crafting Response message");
             sendClientMessage({
                 type: "crafting-response",
@@ -54,18 +78,28 @@ export function handleMinecraftWs(
         return;
     }
     console.log("[Minecraft WS] WebSocket connection established");
+    if (minecraftSocket) { 
+        console.log("[Minecraft WS] Closing existing socket");
+        minecraftSocket.close();
+    }
     minecraftSocket = socket;
 
     minecraftSocket.on("message", function (msg: Data) {
-        try {
-            const received = JSON.parse(msg.toString()) as Message;
-            messageCallbacks
-                .filter((c) => c.type === received.type)
-                .forEach((c) => c.callback(received.data));
-        } catch (error) {
-            console.error("Error parsing message: ", error);
+        const received = typia.json.isParse<Message>(msg.toString());
+        if (!received) {
+            console.error("Invalid message format:", msg.toString());
             socket.close();
+            return;
         }
+        messageCallbacks
+            .filter((c) => c.type === received.type)
+            .forEach((c) => {
+                const result = c.callback(received.data);
+                if (result === false) {
+                    console.error("Error processing message:", received);
+                    socket.close();
+                }
+            });
     });
 
     minecraftSocket.on("[Minecraft WS] error", function (err: any) {

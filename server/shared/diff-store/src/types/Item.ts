@@ -9,3 +9,5 @@ export type Item = {
     isFluid?: boolean;
     isGas?: boolean;
 };
+
+export type ItemUpdate = Partial<Item> & Pick<Item, "id">;

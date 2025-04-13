@@ -2,6 +2,7 @@ import { $items } from "diff-store/src/storage/items";
 import { Message } from "diff-store/src/types/Message";
 import { MessageCallback } from "diff-store/src/types/MessageCallback";
 import dotenv from "dotenv";
+import typia from "typia";
 import WebSocket from "ws";
 import { sendMinecraftMessage } from "./minecraftWs";
 import chunkArray from "./util/chunkArray";
@@ -12,10 +13,24 @@ const CRAFTING_SECRET = process.env.CRAFTING_SECRET;
 
 let sockets: WebSocket[] = [];
 
+const removeSocket = (socket: WebSocket) => {
+    sockets = sockets.filter((s) => s !== socket);
+};
+
+type CraftingRequest = {
+    fingerprint: string;
+    count: number;
+    secret: string;
+};
+
 let messageCallbacks: MessageCallback[] = [
     {
         type: "crafting-request",
         callback: (data: any) => {
+            if (!typia.is<CraftingRequest>(data)) {
+                console.error("Invalid crafting request data:", data);
+                return false;
+            }
             console.log("Received Crafting Request message");
             if (data.secret !== CRAFTING_SECRET) {
                 console.error("Invalid crafting secret");
@@ -44,31 +59,32 @@ export function handleClientWs(socket: WebSocket) {
     });
     sockets.push(socket);
     socket.on("message", (msg) => {
-        try {
-            const received = JSON.parse(msg.toString()) as Message;
-            messageCallbacks
-                .filter((c) => c.type === received.type)
-                .forEach((c) => {
-                    const result = c.callback(received.data);
-                    if (result === false) {
-                        console.error("Error processing message:", received);
-                        socket.close();
-                        sockets = sockets.filter((s) => s !== socket);
-                    }
-                });
-        } catch (error) {
-            console.error("Error parsing message: ", error);
+        const received = typia.json.isParse<Message>(msg.toString());
+        if (!received) {
+            console.error("Invalid message format:", msg.toString());
             socket.close();
+            removeSocket(socket);
+            return;
         }
+        messageCallbacks
+            .filter((c) => c.type === received.type)
+            .forEach((c) => {
+                const result = c.callback(received.data);
+                if (result === false) {
+                    console.error("Error processing message:", received);
+                    socket.close();
+                    sockets = sockets.filter((s) => s !== socket);
+                }
+            });
     });
     socket.on("error", function (err: any) {
         console.error("[Client WS] Error:", err);
-        sockets = sockets.filter((s) => s !== socket);
+        removeSocket(socket);
     });
 
     socket.on("close", function () {
         console.log("[Client WS] Socket closed");
-        sockets = sockets.filter((s) => s !== socket);
+        removeSocket(socket);
     });
 }
 

@@ -1,11 +1,9 @@
 import { atom } from "nanostores";
-import { Item } from "../types/Item";
+import { Item, ItemUpdate } from "../types/Item";
 
 export const $items = atom<Item[]>([]);
 
-export const updateItemStorage = (
-    updates: (Partial<Item> & Pick<Item, "id">)[]
-) => {
+export const updateItemStorage = (updates: ItemUpdate[]) => {
     if (updates === undefined || updates.length === 0) {
         return;
     }

@@ -11,17 +11,23 @@
     "baseUrl": "../.",
     "paths": {
       "@/*": [
-        "./src/*",
+        "./src/*"
       ],
       "diff-store/*": [
         "../shared/diff-store/dist/*"
       ]
-    }
+    },
+    "plugins": [
+      {
+        "transform": "typia/lib/transform"
+      }
+    ],
+    "strictNullChecks": true
   },
   "include": [
-    "src/**/*.ts",
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules"
-  ],
+  ]
 }
