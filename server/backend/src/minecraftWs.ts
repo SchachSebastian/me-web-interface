@@ -16,7 +16,7 @@ let messageCallbacks: MessageCallback[] = [
             console.log("Received INIT message");
             $items.set([]);
             sendClientMessage({
-                type: "reset"
+                type: "reset",
             });
         },
     },
@@ -26,8 +26,18 @@ let messageCallbacks: MessageCallback[] = [
             console.log("received updates: " + data.length);
             updateItemStorage(data);
             sendClientMessage({
-                type: "update-inventory",
+                type: "inventory-update",
                 data,
+            });
+        },
+    },
+    {
+        type: "crafting-response",
+        callback: (data: any) => {
+            console.log("Received Crafting Response message");
+            sendClientMessage({
+                type: "crafting-response",
+                data: data,
             });
         },
     },
@@ -67,4 +77,10 @@ export function handleMinecraftWs(
         console.log("[Minecraft WS] Socket closed");
         minecraftSocket = null;
     });
+}
+
+export function sendMinecraftMessage(message: Message) {
+    if (!minecraftSocket) return false;
+    minecraftSocket.send(JSON.stringify(message));
+    return true;
 }

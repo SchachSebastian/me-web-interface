@@ -3,7 +3,6 @@ import { Item } from "diff-store/src/types/Item";
 import { useRef, useState } from "react";
 import { VirtuosoGrid } from "react-virtuoso";
 import Dialog from "./components/Dialog";
-import { ItemSquare } from "./components/ItemSquare";
 import NumberInput from "./components/NumberInput";
 import { useMeItems, useResetMessage } from "./requests/useMeItems";
 import useVirtuosoComponents from "./useVirtuosoComponents";
@@ -11,6 +10,8 @@ import { filterItems } from "./util/filterItems";
 import { useWebSocket } from "./WebsocketProvider";
 import { useQueryParam } from "./hooks/useQueryParam";
 import { ItemTooltip } from "./components/ItemTooltip";
+import ItemSquare from "./components/ItemSquare";
+import { NotificationArea } from "./components/NotificationArea";
 
 function App() {
     const [searchText, setSearchText] = useQueryParam("search", "");
@@ -35,10 +36,9 @@ function App() {
     console.log(filteredItems.length);
     const onCraftItem = (value: number) => {
         if (clickedItem?.isCraftable) {
-            alert(`Crafting ${clickedItem.displayName}`);
             socket.send(
                 JSON.stringify({
-                    type: "craft-item",
+                    type: "crafting-request",
                     data: {
                         fingerprint: clickedItem.fingerprint,
                         count: value,
@@ -46,6 +46,7 @@ function App() {
                 })
             );
         }
+        setClickedItem(undefined);
     };
 
     return (
@@ -106,6 +107,7 @@ function App() {
             {hoveredItem && hoveredItemRef ? (
                 <ItemTooltip item={hoveredItem} itemRef={hoveredItemRef} containerRef={ref}/>
             ) : null}
+            <NotificationArea/>
         </>
     );
 }

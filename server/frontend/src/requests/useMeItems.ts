@@ -2,7 +2,7 @@ import { useStore } from "@nanostores/react";
 import { $items, updateItemStorage } from "diff-store/src/storage/items";
 import { Item } from "diff-store/src/types/Item";
 import { MessageCallback } from "diff-store/src/types/MessageCallback";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useWebSocket } from "../WebsocketProvider";
 
 function useSubscribe(props: MessageCallback) {
@@ -23,13 +23,36 @@ function useSubscribe(props: MessageCallback) {
 
 export const useMeItems = () => {
     useSubscribe({
-        type: "update-inventory",
+        type: "inventory-update",
         callback: (items: Item[]) => {
             console.log("Received inventory update:", items.length);
             updateItemStorage(Array.from(items));
         },
     });
     return useStore($items);
+};
+
+export const useCraftingResponses = () => {
+    const [craftingResponses, setCraftingResponses] = useState<
+        (Pick<Item, "count" | "fingerprint"> & { success: boolean })[]
+    >([]);
+    useSubscribe({
+        type: "crafting-response",
+        callback: (
+            item: Pick<Item, "count" | "fingerprint"> & { success: boolean }
+        ) => {
+            console.log("Received crafting response", item);
+            setCraftingResponses((prev) => [...prev, item]);
+        },
+    });
+    return [craftingResponses, setCraftingResponses] as [
+        (Pick<Item, "count" | "fingerprint"> & { success: boolean })[],
+        React.Dispatch<
+            React.SetStateAction<
+                (Pick<Item, "count" | "fingerprint"> & { success: boolean })[]
+            >
+        >
+    ];
 };
 
 export const useResetMessage = (callback: () => void) => {
@@ -40,4 +63,4 @@ export const useResetMessage = (callback: () => void) => {
             callback();
         },
     });
-}
+};

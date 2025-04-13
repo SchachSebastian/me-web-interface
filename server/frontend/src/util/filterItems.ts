@@ -33,9 +33,10 @@ export const filterItems = (items: Item[], searchText: string) => {
 
     */
     const searchTerms = searchText.toLowerCase().split(" ");
-    return items.filter((item) =>
-        searchTerms.every(
+    return items.filter((item) => {
+        return searchTerms.every(
             (term) => matchesItem(item, term)
         )
+    }
     );
 };

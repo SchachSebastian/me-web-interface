@@ -3,13 +3,11 @@ import { GridItemProps, GridListProps } from "react-virtuoso";
 
 const calculateColumns = () => {
     const screenWidth = window.innerWidth;
-    console.log("Screen width:", JSON.stringify(screenWidth));
      const minItemWidth = 120;
      const calculatedColumns = Math.max(
          1,
          Math.floor(screenWidth / minItemWidth)
     );
-    console.log("Calculated columns:", calculatedColumns);	
     return calculatedColumns;
 }
 const useVirtuosoComponents = () => {

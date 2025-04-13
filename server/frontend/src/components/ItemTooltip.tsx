@@ -19,11 +19,9 @@ export const ItemTooltip = (props: Props) => {
         if (props.itemRef.current) {
             const containerRect =
                 props.containerRef.current?.getBoundingClientRect();
-            const containerMaxX =
-                (containerRect?.width ?? 0) + (containerRect?.left ?? 0);
-            const containerMaxY = (containerRect?.height ?? 0) + (containerRect?.top ?? 0);
+            const containerMaxX = containerRect?.right ?? 0;
+            const containerMaxY = containerRect?.bottom ?? 0;
             const tooltipRect = ref.current?.getBoundingClientRect();
-            console.log("Tooltip rect", tooltipRect);
             const tooltipWidth = tooltipRect?.width ?? 0;
             const tooltipHeight = tooltipRect?.height ?? 0;
             const rect = props.itemRef.current.getBoundingClientRect();
@@ -48,7 +46,7 @@ export const ItemTooltip = (props: Props) => {
             style={{
                 top: top,
                 left: left,
-                zIndex: 9999,
+                zIndex: 100,
                 pointerEvents: "none",
                 maxWidth: props.containerRef.current?.clientWidth,
             }}

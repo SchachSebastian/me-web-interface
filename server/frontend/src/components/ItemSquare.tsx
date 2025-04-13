@@ -16,14 +16,11 @@ interface Props {
 const hoverDelay = 100; // milliseconds
 
 const ItemSquare = (props: Props) => {
-    if (props.item.displayName === undefined) {
-        console.error("Item has no display name", JSON.stringify(props.item));
-    }
     const [useFallbackImage, setUseFallbackImage] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
     const handleClick = () => {
-        if (props.onClick && props.item.isCraftable && false) {
+        if (props.onClick && props.item.isCraftable && !props.item.isFluid) {
             props.onClick();
         }
     };
@@ -58,7 +55,7 @@ const ItemSquare = (props: Props) => {
     return (
         <div
             style={props.style}
-            className="flex-grow relative inline-block"
+            className="flex-grow relative inline-block" 
             onClick={handleClick}
             onPointerEnter={handlePointerEnter}
             onPointerLeave={handlePointerLeave}

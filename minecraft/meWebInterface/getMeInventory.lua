@@ -57,6 +57,13 @@ local function getNewInventory()
     local inventory = {}
 
     local items = ae2.listItems()
+    local craftableItems = ae2.listCraftableItems()
+    for _, craftableItem in ipairs(craftableItems) do
+        if craftableItem.count == 0 then
+            table.insert(items, craftableItem)
+        end
+    end
+
     for _, item in ipairs(items) do
         local components = nil
         if (next(item.components)) then
@@ -76,6 +83,12 @@ local function getNewInventory()
     end
 
     local fluids = ae2.listFluids()
+    local craftableFluids = ae2.listCraftableFluids()
+    for _, craftableFluid in ipairs(craftableFluids) do
+        if craftableFluid.count == 0 then
+            table.insert(fluids, craftableFluid)
+        end
+    end
     for _, fluid in ipairs(fluids) do
         local components = nil
         if (next(fluid.components)) then

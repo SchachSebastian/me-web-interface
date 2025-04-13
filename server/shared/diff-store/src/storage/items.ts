@@ -9,7 +9,6 @@ export const updateItemStorage = (
     if (updates === undefined || updates.length === 0) {
         return;
     }
-    console.log("Removing "+ updates.filter(u => u.count === -1).length + " items from storage");
     const new_items = $items
         .get()
         .map((item) => {
