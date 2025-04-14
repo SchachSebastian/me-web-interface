@@ -33,33 +33,43 @@ local function sendList(list, type)
 end
 
 local function handleMessages()
-    local message = ws.receive(0.1)
-    if message then
-        local decodedMessage = textutils.unserialiseJSON(message)
-        local type = decodedMessage.type
-        local data = decodedMessage.data
-        if type == "crafting-request" then
-            local fingerprint = data.fingerprint
-            local count = data.count or 1
-            local success, err = handleCraftingRequest(fingerprint, count)
-            ws.send(textutils.serialiseJSON({
-                type = "crafting-response",
-                data = {
-                    success = success,
-                    fingerprint = fingerprint,
-                    count = count
-                }
-            }))
+    while true do
+        local message = ws.receive()
+        if message then
+            local decodedMessage = textutils.unserialiseJSON(message)
+            local type = decodedMessage.type
+            local data = decodedMessage.data
+            if type == "crafting-request" then
+                local fingerprint = data.fingerprint
+                local count = data.count or 1
+                local success, err = handleCraftingRequest(fingerprint, count)
+                if not success then
+                    print("Crafting error:", err)
+                else
+                    print("Crafting success:", fingerprint, count)
+                end
+                ws.send(textutils.serialiseJSON({
+                    type = "crafting-response",
+                    data = {
+                        success = success,
+                        fingerprint = fingerprint,
+                        count = count
+                    }
+                }))
+            end
         end
     end
+end
 
+local function sendInventory()
+    while true do
+        local inventory = getMeInventoryDiff()
+        sendList(inventory, "inventory-update")
+    end
 end
 
 local function wsHandler()
-    while true do
-        sendList(getMeInventoryDiff(), "inventory-update")
-        handleMessages()
-    end
+    parallel.waitForAll(sendInventory, handleMessages)
 end
 
 -- Startup delay

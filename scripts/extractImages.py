@@ -4,16 +4,25 @@ import tkinter as tk
 from tkinter import filedialog
 import zipfile
 
-outputPath = "../frontend/public/assets/"
+outputPath = "../server/frontend/public/assets/"
 
-#G:\TechnicLauncher\modpacks\tekxit-4-official
-def prompt_directory():
+def prompt_directory(title):
     root = tk.Tk()
     root.withdraw()  # Hide the main Tkinter window
     root.attributes('-topmost', True)  # Bring the dialog to the front
 
-    selected_path = filedialog.askdirectory(title="Select the minecraft installation directory")
+    selected_path = filedialog.askdirectory(title=title)
     return selected_path
+
+
+def prompt_file(title):
+    root = tk.Tk()
+    root.withdraw()  # Hide the main Tkinter window
+    root.attributes("-topmost", True)  # Bring the dialog to the front
+
+    selected_path = filedialog.askopenfile(title=title)
+    return selected_path
+
 
 def list_files_in_directory(directory_path):
     try:
@@ -64,15 +73,16 @@ def extract_and_copy_png_files(jar_path, output_directory):
 
 def main():
     print("Please select a directory in the file manager.")
-    directory_path = prompt_directory()
+    directory_path = prompt_directory("Select the minecraft mods directory")
 
-    jar_file_paths = list_files_in_directory(f"{directory_path}\\mods\\")
+    jar_file_paths = list_files_in_directory(directory_path)
     print(jar_file_paths)
-    jar_file_paths.append(directory_path+"/bin/minecraft.jar")
+
+    directory_path = prompt_file("Select the minecraft jar file")
+    jar_file_paths.append(directory_path)
 
     for jar_file_path in jar_file_paths:
         extract_and_copy_png_files(jar_file_path, outputPath)
-
 
 
 if __name__ == "__main__":

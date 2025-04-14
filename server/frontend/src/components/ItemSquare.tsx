@@ -1,8 +1,8 @@
 import { Item } from "diff-store/src/types/Item";
 import { useEffect, useRef, useState } from "react";
+import { withErrorBoundary } from "react-error-boundary";
 import { formatCount } from "../helper/formatCount";
 import { isEnchantedItem } from "../util/isEnchantedItem";
-import { withErrorBoundary } from "react-error-boundary";
 
 interface Props {
     item: Item;
@@ -54,8 +54,10 @@ const ItemSquare = (props: Props) => {
     if (useFallbackImage) imageSrc = "/missingItem.webp";
     return (
         <div
-            style={props.style}
-            className="flex-grow relative inline-block" 
+            style={{
+                ...props.style,
+            }}
+            className="flex-grow relative inline-block"
             onClick={handleClick}
             onPointerEnter={handlePointerEnter}
             onPointerLeave={handlePointerLeave}
