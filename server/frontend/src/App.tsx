@@ -3,16 +3,16 @@ import { Item } from "diff-store/src/types/Item";
 import { useRef, useState } from "react";
 import { VirtuosoGrid } from "react-virtuoso";
 import Dialog from "./components/Dialog";
+import ItemSquare from "./components/ItemSquare";
+import { ItemTooltip } from "./components/ItemTooltip";
+import { NotificationArea } from "./components/NotificationArea";
 import NumberInput from "./components/NumberInput";
+import { useLocalStorage } from "./hooks/useLocalStorage";
+import { useQueryParam } from "./hooks/useQueryParam";
 import { useMeItems, useResetMessage } from "./requests/useMeItems";
 import useVirtuosoComponents from "./useVirtuosoComponents";
 import { filterItems } from "./util/filterItems";
 import { useWebSocket } from "./WebsocketProvider";
-import { useQueryParam } from "./hooks/useQueryParam";
-import { ItemTooltip } from "./components/ItemTooltip";
-import ItemSquare from "./components/ItemSquare";
-import { NotificationArea } from "./components/NotificationArea";
-import { useLocalStorage } from "./hooks/useLocalStorage";
 
 function App() {
     const [searchText, setSearchText] = useQueryParam("search", "");
@@ -20,7 +20,10 @@ function App() {
     const [hoveredItem, setHoveredItem] = useState<Item>();
     const [hoveredItemRef, setHoveredItemRef] =
         useState<React.RefObject<HTMLDivElement>>();
-    const [craftingSecret, setCraftingSecret] = useLocalStorage<string|undefined>("craftingSecret",undefined);
+    const [openHelp, setOpenHelp] = useState(false);
+    const [craftingSecret, setCraftingSecret] = useLocalStorage<
+        string | undefined
+    >("craftingSecret", undefined);
     const socket = useWebSocket();
 
     const items = useMeItems();
@@ -31,7 +34,7 @@ function App() {
 
     const gridComponents = useVirtuosoComponents();
 
-    const filteredItems = filterItems(items, searchText??"").toSorted(
+    const filteredItems = filterItems(items, searchText ?? "").toSorted(
         (a, b) => b.count - a.count
     );
 
@@ -71,15 +74,23 @@ function App() {
                         >
                             Terminal
                         </div>
-                        <input
-                            type="text"
-                            value={searchText ?? ""}
-                            onChange={(event) => {
-                                console.log(event.target.value);
-                                setSearchText(event.target.value);
-                            }}
-                            className="bg-[#8b8b8b] rounded px-3 py-1 text-white text-4xl min-w-10 max-w-4/12"
-                        />
+                        <div className="relative w-fit max-w-4/12">
+                            <input
+                                type="text"
+                                value={searchText ?? ""}
+                                onChange={(event) =>
+                                    setSearchText(event.target.value)
+                                }
+                                className="bg-[#8b8b8b] rounded px-3 py-1 text-white text-4xl pr-10 w-full"
+                            />
+                            <button
+                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 transition"
+                                onClick={() => setOpenHelp(true)}
+                                title="Help"
+                            >
+                                ?
+                            </button>
+                        </div>
                     </div>
                     <div className="flex-1" ref={ref}>
                         <VirtuosoGrid
@@ -115,10 +126,114 @@ function App() {
             >
                 <NumberInput onValueSubmit={onCraftItem} />
             </Dialog>
+            <Dialog
+                isOpen={openHelp}
+                title={"🔍 How Filtering Works"}
+                onClose={() => {
+                    setOpenHelp(false);
+                }}
+            >
+                <div className="text-black text-base space-y-4">
+                    <p>
+                        You can filter items by typing search terms into the
+                        input field. Filters are{" "}
+                        <strong>case-insensitive</strong> and can be combined by
+                        separating them with spaces.
+                    </p>
+
+                    <div>
+                        <h3 className="font-semibold">🧠 Basic Filtering</h3>
+                        <p>
+                            <strong>Text only</strong> → Matches against the
+                            item's <code>displayName</code>.<br />
+                            <em>Example:</em> <code>iron</code> finds items like{" "}
+                            Iron Ingot, Iron Ore, etc.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="font-semibold">#️⃣ NBT Filtering</h3>
+                        <p>
+                            <strong>
+                                <code>#</code> prefix
+                            </strong>{" "}
+                            → Searches inside the item's nbt data.
+                            <br />
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="font-semibold">🧩 Mod Filtering</h3>
+                        <p>
+                            <strong>
+                                <code>@</code> prefix
+                            </strong>{" "}
+                            → Filters by the mod name.
+                            <br />
+                            <em>Example:</em> <code>@mekanism</code> shows items
+                            from the Mekanism mod.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="font-semibold">🏷️ Type Filtering</h3>
+                        <p>
+                            <strong>
+                                <code>$</code> prefix
+                            </strong>{" "}
+                            → Filters by type:
+                        </p>
+                        <ul className="list-disc list-inside ml-4">
+                            <li>
+                                <code>$item</code> – only shows items
+                            </li>
+                            <li>
+                                <code>$fluid</code> – only fluids
+                            </li>
+                            <li>
+                                <code>$gas</code> – only gases
+                            </li>
+                            <li>
+                                <code>$craftable</code> – only craftable items
+                            </li>
+                            <li>
+                                <code>$enchanted</code> – only enchanted items
+                            </li>
+                        </ul>
+                        <p>
+                            <em>Example:</em> <code>$craftable</code> shows all
+                            items that can be crafted.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="font-semibold">🔢 Count Comparison</h3>
+                        <p>
+                            You can filter based on the{" "}
+                            <strong>item count</strong>:
+                        </p>
+                        <ul className="list-disc list-inside ml-4">
+                            <li>
+                                <code>&gt;10</code> → Count greater than 10
+                            </li>
+                            <li>
+                                <code>&lt;5</code> → Count less than 5
+                            </li>
+                            <li>
+                                <code>=64</code> → Count exactly 64
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </Dialog>
             {hoveredItem && hoveredItemRef ? (
-                <ItemTooltip item={hoveredItem} itemRef={hoveredItemRef} containerRef={ref}/>
+                <ItemTooltip
+                    item={hoveredItem}
+                    itemRef={hoveredItemRef}
+                    containerRef={ref}
+                />
             ) : null}
-            <NotificationArea/>
+            <NotificationArea />
         </>
     );
 }

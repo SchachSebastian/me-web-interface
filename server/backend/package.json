@@ -5,7 +5,6 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc ",
-    "builded": "node dist/index.js",
     "prepare": "ts-patch install"
   },
   "keywords": [],

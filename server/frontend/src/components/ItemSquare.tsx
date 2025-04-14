@@ -2,7 +2,8 @@ import { Item } from "diff-store/src/types/Item";
 import { useEffect, useRef, useState } from "react";
 import { withErrorBoundary } from "react-error-boundary";
 import { formatCount } from "../helper/formatCount";
-import { isEnchantedItem } from "../util/isEnchantedItem";
+import { getItemImagePath } from "../util/getItemImagePath";
+import { hasEnchantmentEffect } from "../util/hasEnchantmentEffect";
 
 interface Props {
     item: Item;
@@ -50,7 +51,7 @@ const ItemSquare = (props: Props) => {
     const handleImageUnavailable = useFallbackImage
         ? undefined
         : () => setUseFallbackImage(true);
-    let imageSrc = "/assets/" + props.item.name.replace(":", "/") + ".png";
+    let imageSrc = getItemImagePath(props.item);
     if (useFallbackImage) imageSrc = "/missingItem.webp";
     return (
         <div
@@ -63,14 +64,14 @@ const ItemSquare = (props: Props) => {
             onPointerLeave={handlePointerLeave}
             ref={ref}
         >
-            <div className="relative cursor-pointer bg-[#8b8b8b] aspect-square overflow-hidden">
+            <div className="relative cursor-pointer bg-[#8b8b8b] aspect-square p-1 overflow-hidden">
                 <div className="absolute bottom-1 right-2 z-10 text-white font-bold text-2xl">
                     {formatCount(props.item)}
                 </div>
                 <div className="absolute top-0 right-2 z-10 text-white font-bold text-3xl">
                     {props.item.isCraftable ? "+" : ""}
                 </div>
-                <div className="overflow-hidden h-full w-full p-1 relative">
+                <div className="overflow-hidden w-full aspect-square relative">
                     <img
                         style={{
                             imageRendering: "pixelated",
@@ -81,7 +82,7 @@ const ItemSquare = (props: Props) => {
                         src={imageSrc}
                         alt={props.item.displayName}
                     />
-                    {isEnchantedItem(props.item) ? (
+                    {hasEnchantmentEffect(props.item) ? (
                         <>
                             <div
                                 style={{

@@ -3,18 +3,21 @@ import React, { useState } from 'react';
 type NumberInputProps = {
     onValueSubmit: (value: number) => void;
 };
-const buttonStyle = `bg-[#8b8b8b] text-white rounded hover:bg-[#545353] focus:outline-none focus:ring-2 focus:ring-[#545353] focus:ring-offset-2`;
+const buttonStyle = `bg-[#8b8b8b] text-white text-xl rounded hover:bg-[#545353] focus:outline-none focus:ring-2 focus:ring-[#545353] focus:ring-offset-2`;
 
 const NumberInput: React.FC<NumberInputProps> = ({ onValueSubmit }) => {
     const [value, setValue] = useState(1);
 
     const handleIncrement = (amount: number) => {
-        setValue((prev) => prev + amount);
+        setValue((prev) => {
+            if(prev === 1) return amount;
+            return prev + amount;
+        });
     };
 
     const handleDecrement = (amount: number) => {
         setValue((prev) => {
-            if (prev < amount) return 1;
+            if (prev <= amount) return 1;
             return prev - amount;
         });
     };
@@ -43,12 +46,12 @@ const NumberInput: React.FC<NumberInputProps> = ({ onValueSubmit }) => {
             >
                 +1000
             </button>
-            <div className="col-span-3 flex justify-center">
+            <div className="col-span-3">
                 <input
                     type="number"
                     value={value}
                     onChange={(e) => setValue(parseInt(e.target.value) ?? 1)}
-                    className="flex-grow text-center text-lg border border-gray-300 rounded"
+                    className="w-full text-center text-xl border border-gray-300 rounded"
                 />
             </div>
             <button

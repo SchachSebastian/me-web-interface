@@ -19,7 +19,7 @@ const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, title, children }) => 
 
     return ReactDOM.createPortal(
         <div onClick={handleBackdropClick} className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-[#c6c6c6] border-white border-8 rounded p-5 flex flex-col">
+            <div className="bg-[#c6c6c6] border-white border-8 rounded p-5 flex flex-col max-w-[85%] max-h-[50%] overflow-hidden">
                 {/* Header */}
                 <div className="flex justify-between items-center sticky top-0 bg-[#c6c6c6] pb-5">
                     <h2 className="text-black text-lg font-bold">{title || "Dialog"}</h2>

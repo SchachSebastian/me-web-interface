@@ -1,4 +1,5 @@
 import { Item } from "diff-store/src/types/Item";
+import { isEnchantedItem } from "./isEnchantedItem";
 
 const matchesItem = (item: Item, term: string) => {
     if (term.startsWith("#")) {
@@ -19,7 +20,16 @@ const matchesItem = (item: Item, term: string) => {
         if ("craftable".startsWith(term.slice(1))) {
             return item.isCraftable as boolean;
         }
+        if ("enchanted".startsWith(term.slice(1))) {
+            return isEnchantedItem(item);
+        }
         return false;
+    } else if (term.startsWith(">")) {
+        return item.count > Number(term.slice(1));
+    } else if (term.startsWith("<")) {
+        return item.count < Number(term.slice(1));
+    } else if (term.startsWith("=")) {
+        return item.count === Number(term.slice(1));
     } else {
         return item.displayName.toLowerCase().includes(term);
     }
@@ -30,6 +40,10 @@ export const filterItems = (items: Item[], searchText: string) => {
         - basic text checks for displayName
         - # text checks for item.components content
         - @ text checks for mod (item.name.split(':')[0]) content
+        - $ text checks for item type (item.isFluid, item.isGas, item.isCraftable)
+        - > text checks for item count greater than defined
+        - < text checks for item count smaller than defined
+        - = text checks for item count equal to defined
 
     */
     const searchTerms = searchText.toLowerCase().split(" ");
