@@ -22,20 +22,10 @@ If you’re using the **ATM 10 modpack**, you can skip the setup steps and use t
 Run the following command:
 
 ```bash
-docker run -e SECRET=yourSecretHere -p 80:80 schachsebastian/me-web-interface:atm10
+docker run -e SECRET=yourSecretHere -e CRAFTING_SECRET=yourCraftingSecretHere -p 80:80 schachsebastian/me-web-interface:atm10
 ```
 
 - The server will run on **port 80**.
-- The `SECRET` is **optional** and defaults to `"secret"`—which, let’s be honest, is basically like leaving your key under the doormat.  
-  🔐 *For better security (and to avoid chaos), set a custom secret!*
-
-> Worst-case scenario?  
-> Some random prankster pushes fake inventory data and suddenly you’ve got 64 dirt blocks labeled as diamonds. 😱  
-> Be smart—protect your ME system.
-
-Once it’s up and running, open your browser and go to your server’s **public IP address** or **domain name** to access the ME system interface.
-
----
 
 ### 🖼️ Option 2: Build the Server from Scratch
 
@@ -49,7 +39,7 @@ First, you need to install the required dependencies for the Python script. This
 pip install -r requirements.txt
 ```
 
-This will install the necessary dependencies, including **Tkinter** for the image extraction script.
+This will install the necessary dependencies for the image extraction script.
 
 #### 2. Extract Minecraft Item Icons
 
@@ -58,11 +48,12 @@ Before building the server, you’ll need to extract item icons from the modpack
 Run:
 
 ```bash
-python scripts/extractImages.py
+py scripts/extractImages.py
 ```
 
-- This script will **open a folder selection dialog using Tkinter**.
-- Choose your **modpack directory** (e.g., the folder containing your `mods`, `config`, and `resourcepacks`).
+- This script will **open a folder selection dialog using tkinter**.
+- Choose your **mods directory**
+- Choose your **minecraft jar file** (e.g., `minecraft.jar` or `forge.jar`, etc.)
 - The script will locate and extract all relevant item textures for the frontend.
 
 #### 3. Build & Run the Web Server with Docker
@@ -71,15 +62,15 @@ After extracting the images, build and run the Docker container:
 
 ```bash
 docker build -t me-web-interface .
-docker run -e SECRET=yourSecretHere -p 80:80 me-web-interface
+docker run -e SECRET=yourSecretHere -e CRAFTING_SECRET=yourCraftingSecretHere -p 80:80 me-web-interface
 ```
 
 - The server runs on **port 80**.
-- The `SECRET` is **optional** and defaults to `"secret"`—which is basically like leaving your key under the doormat.  
+- The `SECRET` as well as the `CRAFTING_SECRET` are **optional** and default to `"secret"` and `"crafting"` —which is basically like leaving your key under the doormat.  
   🔐 *For better security (and to avoid chaos), set a custom secret!*
 
 > Worst-case scenario?  
-> Some random prankster pushes fake inventory data and suddenly you’ve got 64 dirt blocks labeled as diamonds. 😱  
+> Some random prankster starts crafting 10 000 buttons. 😱  
 > Be smart—protect your ME system.
 
 Once it’s up and running, open your browser and go to your server’s **public IP address** or **domain name** to access the ME system interface.
@@ -104,7 +95,7 @@ Edit the file: `meWebInterface/config.lua`
 local config = {
     url = "ws://<your-server-ip>", -- WebSocket URL of the Express server
     secret = "yourSecretHere",     -- Must match the Docker SECRET (or leave as "secret")
-    maxItemsPerMessage = 100,
+    maxItemsPerMessage = 100,     -- Maximum number of items to send in one websocket message
 }
 
 return config

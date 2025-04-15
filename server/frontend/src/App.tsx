@@ -99,7 +99,7 @@ function App() {
                                 className="bg-[#8b8b8b] rounded px-3 py-1 text-white text-4xl pr-10 w-full"
                             />
                             <button
-                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 transition"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black rounded-full border-no w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 transition"
                                 onClick={() => setOpenHelp(true)}
                                 title="Help"
                             >

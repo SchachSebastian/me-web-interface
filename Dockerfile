@@ -50,6 +50,8 @@ RUN npm install
 WORKDIR /server/backend
 
 ENV NODE_ENV=production
+ENV SECRET=secret
+ENV CRAFTING_SECRET=crafting
 
 EXPOSE 80
 
