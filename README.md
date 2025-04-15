@@ -10,6 +10,7 @@ This project connects a Minecraft ComputerCraft computer to a web-based React in
 - 📦 View all items stored in your **Applied Energistics 2 ME system**
 - 🧠 Interface using a **Lua script with Advanced Peripherals’ ME Bridge**
 - 🌐 Browse your inventory from a sleek **React frontend**
+- 🛠️ Even **remotely craft items** directly from the web interface — just click and let the ME system handle the rest!
 
 ---
 
