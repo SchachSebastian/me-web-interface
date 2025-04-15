@@ -9,10 +9,12 @@ import { NotificationArea } from "./components/NotificationArea";
 import NumberInput from "./components/NumberInput";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { useQueryParam } from "./hooks/useQueryParam";
-import { useMeItems, useResetMessage } from "./requests/useMeItems";
-import useVirtuosoComponents from "./useVirtuosoComponents";
+import { useMeItems } from "./requests/useMeItems";
+import useVirtuosoComponents from "./hooks/useVirtuosoComponents";
 import { filterItems } from "./util/filterItems";
 import { useWebSocket } from "./WebsocketProvider";
+import { useResetMessage } from "./requests/useResetMessage";
+import { useMeStorage } from "./requests/useMeStorage";
 
 function App() {
     const [searchText, setSearchText] = useQueryParam("search", "");
@@ -27,6 +29,7 @@ function App() {
     const socket = useWebSocket();
 
     const items = useMeItems();
+    const storage = useMeStorage();
 
     useResetMessage(() => $items.set([]));
 
@@ -74,7 +77,19 @@ function App() {
                         >
                             Terminal
                         </div>
-                        <div className="relative w-fit max-w-4/12">
+                        <div className="pointer-events-none basis-4/12 min-w-fit flex-grow flex-shrink text-right">
+                            {"📦 "}
+                            {storage.item.used.toLocaleString()}
+                            {"/"}
+                            {storage.item.total.toLocaleString()} bytes
+                        </div>
+                        <div className="pointer-events-none flex-shrink min-w-fit text-right">
+                            {"💧 "}
+                            {storage.fluid.used.toLocaleString()}
+                            {"/"}
+                            {storage.fluid.total.toLocaleString()} bytes
+                        </div>
+                        <div className="relative flex-grow">
                             <input
                                 type="text"
                                 value={searchText ?? ""}

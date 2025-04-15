@@ -1,7 +1,7 @@
 import { Item } from "diff-store/src/types/Item";
 import { useEffect, useRef, useState } from "react";
 import { withErrorBoundary } from "react-error-boundary";
-import { formatCount } from "../helper/formatCount";
+import { formatCount } from "../util/formatCount";
 import { getItemImagePath } from "../util/getItemImagePath";
 import { hasEnchantmentEffect } from "../util/hasEnchantmentEffect";
 

@@ -21,10 +21,24 @@ interface Props {
 export const WebsocketProvider = (props: Props) => {
     const [socket, setSocket] = useState(new WebSocket(props.url));
     useEffect(() => {
-        socket.addEventListener("error", (event) => {
+        const handleFocus = () => {
+            if (socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING) {
+                setSocket(new WebSocket(props.url));
+            }
+        };
+
+        window.addEventListener("focus", handleFocus);
+
+        return () => {
+            window.removeEventListener("focus", handleFocus);
+        };
+    }, []);
+    useEffect(() => {
+        socket.addEventListener("close", (event) => {
             console.error("WebSocket error observed:", event);
             localStorage.removeItem("craftingSecret");
-            document.location.reload();
+            setSocket(new WebSocket(props.url));
+            location.reload();
         });
     }, [socket]);
     return (

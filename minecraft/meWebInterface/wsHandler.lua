@@ -5,6 +5,8 @@ local resetStorage = getMeInventory.resetStorage
 local craftingHandler = require("craftingHandler")
 local handleCraftingRequest = craftingHandler.handleCraftingRequest
 
+local getMeStorage = require("getMeStorage")
+
 print("Started")
 
 local config = require("config")
@@ -68,8 +70,19 @@ local function sendInventory()
     end
 end
 
+local function sendStorage()
+    while true do
+        sleep(0.1)
+        ws.send(textutils.serialiseJSON({
+            type = "storage-update",
+            data = getMeStorage()
+        }))
+
+    end
+end
+
 local function wsHandler()
-    parallel.waitForAll(sendInventory, handleMessages)
+    parallel.waitForAll(sendInventory, handleMessages, sendStorage)
 end
 
 -- Startup delay

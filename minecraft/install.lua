@@ -4,6 +4,10 @@ shell.run(
 shell.run(
     "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/getMeInventory.lua",
     "meWebInterface/getMeInventory.lua")
+shell.run(
+    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/getMeStorage.lua",
+    "meWebInterface/getMeStorage.lua")
+
 
 
 local configSuccess = shell.run(

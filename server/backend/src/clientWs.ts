@@ -1,4 +1,5 @@
 import { $items } from "diff-store/src/storage/items";
+import { $storage } from "diff-store/src/storage/storage";
 import { Message } from "diff-store/src/types/Message";
 import { MessageCallback } from "diff-store/src/types/MessageCallback";
 import dotenv from "dotenv";
@@ -57,25 +58,37 @@ export function handleClientWs(socket: WebSocket) {
             } as Message)
         );
     });
+    socket.send(
+        JSON.stringify({
+            type: "storage-update",
+            data: $storage.get(),
+        } as Message)
+    );
     sockets.push(socket);
     socket.on("message", (msg) => {
-        const received = typia.json.isParse<Message>(msg.toString());
-        if (!received) {
-            console.error("Invalid message format:", msg.toString());
-            socket.close();
+        try {
+            const received = typia.json.isParse<Message>(msg.toString());
+            if (!received) {
+                console.error("Invalid message format:", msg.toString());
+                socket.close(1008);
+                removeSocket(socket);
+                return;
+            }
+            messageCallbacks
+                .filter((c) => c.type === received.type)
+                .forEach((c) => {
+                    const result = c.callback(received.data);
+                    if (result === false) {
+                        console.error("Error processing message:", received);
+                        socket.close(1008);
+                        sockets = sockets.filter((s) => s !== socket);
+                    }
+                });
+        } catch (err) {
+            console.error("Error parsing message:", err);
+            socket.close(1008);
             removeSocket(socket);
-            return;
         }
-        messageCallbacks
-            .filter((c) => c.type === received.type)
-            .forEach((c) => {
-                const result = c.callback(received.data);
-                if (result === false) {
-                    console.error("Error processing message:", received);
-                    socket.close();
-                    sockets = sockets.filter((s) => s !== socket);
-                }
-            });
     });
     socket.on("error", function (err: any) {
         console.error("[Client WS] Error:", err);

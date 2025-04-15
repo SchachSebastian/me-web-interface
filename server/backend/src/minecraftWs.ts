@@ -6,7 +6,9 @@ import http from "http";
 import WebSocket, { Data } from "ws";
 import { sendClientMessage } from "./clientWs";
 import typia from 'typia';
-import { Item, ItemUpdate } from 'diff-store/src/types/Item';
+import { Item, ItemUpdate } from "diff-store/src/types/Item";
+import { Storage } from "diff-store/src/types/Storage";
+import { $storage } from "diff-store/src/storage/storage";
 
 dotenv.config();
 
@@ -65,6 +67,21 @@ let messageCallbacks: MessageCallback[] = [
             });
         },
     },
+    {
+        type: "storage-update",
+        callback: (data: any) => {
+            if (!typia.is<Storage>(data)) {
+                console.error("Invalid storage data:", data);
+                return false;
+            }
+            $storage.set(data);
+            console.log("Received Storage Update message");
+            sendClientMessage({
+                type: "storage-update",
+                data: data,
+            });
+        },
+    },
 ];
 
 const SECRET = process.env.SECRET;
@@ -74,32 +91,37 @@ export function handleMinecraftWs(
 ) {
     if (request.headers["secret"] !== SECRET) {
         console.error("Invalid secret");
-        socket.close();
+        socket.close(1008);
         return;
     }
     console.log("[Minecraft WS] WebSocket connection established");
     if (minecraftSocket) { 
         console.log("[Minecraft WS] Closing existing socket");
-        minecraftSocket.close();
+        minecraftSocket.close(1000);
     }
     minecraftSocket = socket;
 
     minecraftSocket.on("message", function (msg: Data) {
-        const received = typia.json.isParse<Message>(msg.toString());
-        if (!received) {
-            console.error("Invalid message format:", msg.toString());
-            socket.close();
-            return;
+        try {
+            const received = typia.json.isParse<Message>(msg.toString());
+            if (!received) {
+                console.error("Invalid message format:", msg.toString());
+                socket.close(1008);
+                return;
+            }
+            messageCallbacks
+                .filter((c) => c.type === received.type)
+                .forEach((c) => {
+                    const result = c.callback(received.data);
+                    if (result === false) {
+                        console.error("Error processing message:", received);
+                        socket.close(1008);
+                    }
+                });
+        } catch (error) {
+            console.error("Error parsing message:", error);
+            socket.close(1008);
         }
-        messageCallbacks
-            .filter((c) => c.type === received.type)
-            .forEach((c) => {
-                const result = c.callback(received.data);
-                if (result === false) {
-                    console.error("Error processing message:", received);
-                    socket.close();
-                }
-            });
     });
 
     minecraftSocket.on("[Minecraft WS] error", function (err: any) {

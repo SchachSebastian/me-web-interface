@@ -1,8 +1,7 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { useCraftingResponses } from '../requests/useMeItems';
 import { useStore } from "@nanostores/react";
 import { $items } from "diff-store/src/storage/items";
+import ReactDOM from "react-dom";
+import { useCraftingResponses } from "../requests/useCraftingResponses";
 export const NotificationArea = () => {
     const [craftingResponses, setCraftingResponses] = useCraftingResponses();
     const items = useStore($items);
@@ -10,7 +9,9 @@ export const NotificationArea = () => {
     const firstResponse = craftingResponses[craftingResponses.length - 1];
     if (!firstResponse) return <></>;
 
-    const item = items.find((item) => item.fingerprint === firstResponse.fingerprint);
+    const item = items.find(
+        (item) => item.fingerprint === firstResponse.fingerprint
+    );
     const name = item?.displayName ?? firstResponse.fingerprint;
 
     const isSuccess = firstResponse.success;
