@@ -119,7 +119,7 @@ function App() {
             </div>
             <Dialog
                 isOpen={clickedItem !== undefined}
-                title={clickedItem?.displayName + " produzieren"}
+                title={"Produce " + clickedItem?.displayName}
                 onClose={() => {
                     setClickedItem(undefined);
                 }}
