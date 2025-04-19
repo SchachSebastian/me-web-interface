@@ -1,8 +1,13 @@
+type CountHistoryElement = {
+    timestamp: number;
+    count: number;
+}
 export type Item = {
     id: string;
     name: string;
     displayName: string;
     count: number;
+    countHistory: CountHistoryElement[];
     fingerprint?: string;
     components?: any;
     isCraftable: boolean;

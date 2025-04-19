@@ -1,14 +1,16 @@
-import { updateItemStorage, $items } from 'diff-store/src/storage/items';
+import { $items, updateItemStorage } from 'diff-store/src/storage/items';
+import { $storage } from "diff-store/src/storage/storage";
+import { Item } from "diff-store/src/types/Item";
 import { Message } from "diff-store/src/types/Message";
 import { MessageCallback } from "diff-store/src/types/MessageCallback";
+import { Storage } from "diff-store/src/types/Storage";
 import dotenv from "dotenv";
 import http from "http";
+import typia from 'typia';
 import WebSocket, { Data } from "ws";
 import { sendClientMessage } from "./clientWs";
-import typia from 'typia';
-import { Item, ItemUpdate } from "diff-store/src/types/Item";
-import { Storage } from "diff-store/src/types/Storage";
-import { $storage } from "diff-store/src/storage/storage";
+import { MinecraftItem } from './types/MinecraftItem';
+import { strict } from 'assert';
 
 dotenv.config();
 
@@ -33,13 +35,13 @@ let messageCallbacks: MessageCallback[] = [
     {
         type: "inventory-update",
         callback: (data: any) => {
-            if (!typia.is<ItemUpdate[]>(data)) {
+            if (!typia.equals<MinecraftItem[]>(data)) {
                 console.error("Invalid inventory update data:", data);
                 return false;
             }
             const validUpdates = data.filter((update) => {
                 const item = $items.get().find((item) => item.id === update.id);
-                if (!item && !typia.is<Item>(update)) {
+                if (!item && !typia.is<MinecraftItem>(update)) {
                     console.error("Invalid item update:", update);
                     return false;
                 }
@@ -56,7 +58,7 @@ let messageCallbacks: MessageCallback[] = [
     {
         type: "crafting-response",
         callback: (data: any) => {
-            if (!typia.is<CraftingResponse>(data)) {
+            if (!typia.equals<CraftingResponse>(data)) {
                 console.error("Invalid crafting response data:", data);
                 return false;
             }
@@ -70,7 +72,7 @@ let messageCallbacks: MessageCallback[] = [
     {
         type: "storage-update",
         callback: (data: any) => {
-            if (!typia.is<Storage>(data)) {
+            if (!typia.equals<Storage>(data)) {
                 console.error("Invalid storage data:", data);
                 return false;
             }

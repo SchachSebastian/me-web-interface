@@ -28,7 +28,7 @@ let messageCallbacks: MessageCallback[] = [
     {
         type: "crafting-request",
         callback: (data: any) => {
-            if (!typia.is<CraftingRequest>(data)) {
+            if (!typia.equals<CraftingRequest>(data)) {
                 console.error("Invalid crafting request data:", data);
                 return false;
             }

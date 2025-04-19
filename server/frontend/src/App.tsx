@@ -9,12 +9,12 @@ import { NotificationArea } from "./components/NotificationArea";
 import NumberInput from "./components/NumberInput";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { useQueryParam } from "./hooks/useQueryParam";
-import { useMeItems } from "./requests/useMeItems";
 import useVirtuosoComponents from "./hooks/useVirtuosoComponents";
+import { useMeItems } from "./requests/useMeItems";
+import { useMeStorage } from "./requests/useMeStorage";
+import { useResetMessage } from "./requests/useResetMessage";
 import { filterItems } from "./util/filterItems";
 import { useWebSocket } from "./WebsocketProvider";
-import { useResetMessage } from "./requests/useResetMessage";
-import { useMeStorage } from "./requests/useMeStorage";
 
 function App() {
     const [searchText, setSearchText] = useQueryParam("search", "");
@@ -66,11 +66,14 @@ function App() {
         setClickedItem(undefined);
     };
 
+    const itemPercentage = (storage.item.used / storage.item.total) * 100;
+    const fluidPercentage = (storage.fluid.used / storage.fluid.total) * 100;
+
     return (
         <>
             <div className="bg-minecraft-bg bg-cover bg-center w-full h-full p-[2%]">
                 <div className="w-full h-full bg-[#c6c6c6] border-white border-8 rounded flex flex-col overflow-hidden p-5">
-                    <div className="flex flex-wrap gap-4 justify-between items-center bg-[#c6c6c6] pb-5">
+                    <div className="flex flex-wrap gap-4 justify-end items-center bg-[#c6c6c6] pb-5">
                         <div
                             className="text-[#3e3e3e] text-4xl font-bold hover:cursor-pointer"
                             onClick={() => setSearchText("")}
@@ -79,15 +82,17 @@ function App() {
                         </div>
                         <div className="pointer-events-none basis-4/12 min-w-fit flex-grow flex-shrink text-right">
                             {"📦 "}
-                            {storage.item.used.toLocaleString()}
-                            {"/"}
-                            {storage.item.total.toLocaleString()} bytes
+                            {!Number.isNaN(itemPercentage)
+                                ? itemPercentage.toFixed(2)
+                                : "-"}{" "}
+                            %
                         </div>
                         <div className="pointer-events-none flex-shrink min-w-fit text-right">
                             {"💧 "}
-                            {storage.fluid.used.toLocaleString()}
-                            {"/"}
-                            {storage.fluid.total.toLocaleString()} bytes
+                            {!Number.isNaN(fluidPercentage)
+                                ? fluidPercentage.toFixed(2)
+                                : "-"}{" "}
+                            %
                         </div>
                         <div className="relative flex-grow">
                             <input

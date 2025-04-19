@@ -1,6 +1,7 @@
 import { Item } from "diff-store/src/types/Item";
 import { useLayoutEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
+import { calcCountChange } from "../util/calcCountChange";
 import { AdditionalItemInfo } from "./additionalItemInfo/AdditionalItemInfo";
 
 type Props = {
@@ -40,6 +41,8 @@ export const ItemTooltip = (props: Props) => {
     }, [props.itemRef.current]);
 
     const mod = props.item.name.split(":")[0].toLowerCase();
+    const hourChange = calcCountChange(props.item, 1000 * 60 * 60);
+    const dayChange = calcCountChange(props.item, 1000 * 60 * 60 * 24);
     return ReactDOM.createPortal(
         <div
             ref={ref}
@@ -59,6 +62,34 @@ export const ItemTooltip = (props: Props) => {
                 <div className="text-gray-300 font-mono text-sm">
                     Count: {props.item.count.toLocaleString()}
                 </div>
+                {hourChange ? (
+                    <div className="text-gray-300 font-mono text-sm">
+                        {"1h "}
+                        {hourChange >= 0 ? (
+                            <span className="text-green-600">🠝</span>
+                        ) : (
+                            <span className="text-red-600">🠟</span>
+                        )}
+                        {": "}
+                        {hourChange.toFixed(2)}
+                    </div>
+                ) : (
+                    <></>
+                )}
+                {dayChange ? (
+                    <div className="text-gray-300 font-mono text-sm">
+                        {"24h "}
+                        {dayChange >= 0 ? (
+                            <span className="text-green-600">🠝</span>
+                        ) : (
+                            <span className="text-red-600">🠟</span>
+                        )}
+                        {": "}
+                        {dayChange.toFixed(2)}
+                    </div>
+                ) : (
+                    <></>
+                )}
                 <div className="text-gray-400 font-mono text-sm mb-1">
                     {props.item.name}
                 </div>
