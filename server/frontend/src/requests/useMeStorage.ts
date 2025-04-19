@@ -7,6 +7,7 @@ export const useMeStorage = () => {
     useSubscribe({
         type: "storage-update",
         callback: (storage: Storage) => {
+            console.log("Received storage update:", storage);
             $storage.set(storage);
         },
     });

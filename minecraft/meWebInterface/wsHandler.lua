@@ -77,24 +77,22 @@ local function sendStorage()
             type = "storage-update",
             data = getMeStorage()
         }))
-
     end
 end
 
+local initMessage = textutils.serialiseJSON({
+    type = "init"
+})
 local function wsHandler()
+    ws = http.websocket(url, headers)
+    ws.send(initMessage)
+    resetStorage()
     parallel.waitForAll(sendInventory, handleMessages, sendStorage)
 end
 
 -- Startup delay
 sleep(5)
 
-local initMessage = textutils.serialiseJSON({
-    type = "init"
-})
-
 while true do
-    ws = http.websocket(url, headers)
-    ws.send(initMessage)
-    resetStorage()
     pcall(wsHandler)
 end
