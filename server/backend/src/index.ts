@@ -4,7 +4,7 @@ import { createHttpServer } from "./httpServer";
 
 import { $items } from "diff-store/src/storage/items";
 import dotenv from "dotenv";
-import { Item } from "shared/diff-store/src/types/Item";
+import { Item } from "diff-store/src/types/Item";
 import { WebSocketServer } from "ws";
 import { handleMinecraftWs } from "./minecraftWs";
 import chunkArray from "./util/chunkArray";
