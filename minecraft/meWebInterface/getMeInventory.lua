@@ -1,30 +1,8 @@
 local ae2 = peripheral.find("meBridge")
+local util = require("util")
+local getDiff = util.getDiff
 
 local storage = {}
-
-local function deepEqual(a, b)
-    if type(a) ~= type(b) then
-        return false
-    end
-
-    if type(a) == "table" then
-        for key, value in pairs(a) do
-            if not deepEqual(value, b[key]) then
-                return false
-            end
-        end
-
-        for key, value in pairs(b) do
-            if not deepEqual(value, a[key]) then
-                return false
-            end
-        end
-
-        return true
-    else
-        return a == b
-    end
-end
 
 local function cleanDisplayName(displayName)
     displayName = displayName:match("^%s*(.-)%s*$")
@@ -38,19 +16,6 @@ local function cleanDisplayName(displayName)
     end
 
     return displayName
-end
-
-
-local function getItemDiff(old, new)
-    local diff = {}
-
-    for key, value in pairs(new) do
-        if not deepEqual(value, old[key]) then
-            diff[key] = new[key]
-        end
-    end
-
-    return diff
 end
 
 local function getNewInventory()
@@ -133,7 +98,7 @@ local function getMeInventoryDiff()
         local item_key = item.id
         local saved_item = storage[item_key] or {}
 
-        local diff = getItemDiff(saved_item, item)
+        local diff = getDiff(saved_item, item)
         if next(diff) then
             diff.id = item.id
             table.insert(list, diff)

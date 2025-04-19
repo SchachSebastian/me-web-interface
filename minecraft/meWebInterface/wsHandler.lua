@@ -73,10 +73,14 @@ end
 local function sendStorage()
     while true do
         sleep(0.1)
-        ws.send(textutils.serialiseJSON({
-            type = "storage-update",
-            data = getMeStorage()
-        }))
+        local data = getMeStorage()
+        if data then
+            ws.send(textutils.serialiseJSON({
+                type = "storage-update",
+                data = data
+            }))
+
+        end
     end
 end
 

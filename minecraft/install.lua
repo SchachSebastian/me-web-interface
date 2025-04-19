@@ -11,6 +11,9 @@ shell.run(
     "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/getMeStorage.lua",
     "meWebInterface/getMeStorage.lua")
 shell.run(
+    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/util.lua",
+    "meWebInterface/util.lua")
+shell.run(
     "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/config.lua",
     "meWebInterface/config.lua")
 
