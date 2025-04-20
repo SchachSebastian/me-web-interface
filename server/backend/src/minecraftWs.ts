@@ -41,7 +41,7 @@ let messageCallbacks: MessageCallback[] = [
             }
             const validUpdates = data.filter((update) => {
                 const item = $items.get().find((item) => item.id === update.id);
-                if (!item && !typia.is<MinecraftItem>(update)) {
+                if (!item && !typia.is<Omit<Item,"countHistory">>(update)) {
                     console.error("Invalid item update:", update);
                     return false;
                 }

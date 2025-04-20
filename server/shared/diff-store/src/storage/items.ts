@@ -17,7 +17,7 @@ export const updateItemStorage = (updates: ItemUpdate[]) => {
                     ...update,
                     countHistory: update.countHistory
                         ? [...update.countHistory, ...item.countHistory]
-                        : [item.countHistory],
+                        : item.countHistory,
                 } as Item;
             }
             return item;

@@ -29,6 +29,7 @@ ws.on("connection", (socket, req) => {
 });
 
 setInterval(() => {
+    console.log("Updating countHistory")
     const timestamp = Date.now();
     const updates: Pick<Item,"id"|"countHistory">[] = [];
     const newItems = $items.get().map((item) => {
