@@ -15,9 +15,6 @@ export const updateItemStorage = (updates: ItemUpdate[]) => {
                 return {
                     ...item,
                     ...update,
-                    countHistory: update.countHistory
-                        ? [...update.countHistory, ...item.countHistory]
-                        : item.countHistory,
                 } as Item;
             }
             return item;
@@ -29,7 +26,7 @@ export const updateItemStorage = (updates: ItemUpdate[]) => {
                 $items.get().find((item) => update.id === item.id) === undefined
         )
         .forEach((item) => {
-            new_items.push({ ...item, countHistory: item.countHistory?item.countHistory:[] } as Item);
+            new_items.push(item as Item);
         });
-    $items.set(new_items);
+    $items.set(new_items.sort((a, b) => b.count - a.count));
 };

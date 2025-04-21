@@ -41,8 +41,7 @@ export const ItemTooltip = (props: Props) => {
     }, [props.itemRef.current]);
 
     const mod = props.item.name.split(":")[0].toLowerCase();
-    const hourChange = calcCountChange(props.item, 1000 * 60 * 60);
-    const dayChange = calcCountChange(props.item, 1000 * 60 * 60 * 24);
+    const { delta5m, delta1h, delta24h} = calcCountChange(props.item);
     return ReactDOM.createPortal(
         <div
             ref={ref}
@@ -62,30 +61,56 @@ export const ItemTooltip = (props: Props) => {
                 <div className="text-gray-300 font-mono text-sm">
                     Count: {props.item.count.toLocaleString()}
                 </div>
-                {hourChange ? (
+                {delta5m ? (
                     <div className="text-gray-300 font-mono text-sm">
-                        {"1h "}
-                        {hourChange >= 0 ? (
-                            <span className="text-green-600">🠝</span>
+                        {"5min "}
+                        {delta5m >= 0 ? (
+                            <span className="text-green-600 font-extrabold">
+                                ↑
+                            </span>
                         ) : (
-                            <span className="text-red-600">🠟</span>
+                            <span className="text-red-600 font-extrabold">
+                                ↓
+                            </span>
                         )}
                         {": "}
-                        {hourChange.toFixed(2)}
+                        {delta5m?.toLocaleString()}
                     </div>
                 ) : (
                     <></>
                 )}
-                {dayChange ? (
+                {delta1h ? (
                     <div className="text-gray-300 font-mono text-sm">
-                        {"24h "}
-                        {dayChange >= 0 ? (
-                            <span className="text-green-600">🠝</span>
+                        {"1h "}
+                        {delta1h >= 0 ? (
+                            <span className="text-green-600 font-extrabold">
+                                ↑
+                            </span>
                         ) : (
-                            <span className="text-red-600">🠟</span>
+                            <span className="text-red-600 font-extrabold">
+                                ↓
+                            </span>
                         )}
                         {": "}
-                        {dayChange.toFixed(2)}
+                        {delta1h.toLocaleString()}
+                    </div>
+                ) : (
+                    <></>
+                )}
+                {delta24h ? (
+                    <div className="text-gray-300 font-mono text-sm">
+                        {"24h "}
+                        {delta24h >= 0 ? (
+                            <span className="text-green-600 font-extrabold">
+                                ↑
+                            </span>
+                        ) : (
+                            <span className="text-red-600 font-extrabold">
+                                ↓
+                            </span>
+                        )}
+                        {": "}
+                        {delta24h.toLocaleString()}
                     </div>
                 ) : (
                     <></>

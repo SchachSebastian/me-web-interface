@@ -1,13 +1,13 @@
-type CountHistoryElement = {
-    timestamp: number;
-    count: number;
-}
+import CountHistoryElement from "./CountHistoryElement";
+
 export type Item = {
     id: string;
     name: string;
     displayName: string;
     count: number;
-    countHistory: CountHistoryElement[];
+    fiveMinAgo?: CountHistoryElement;
+    oneHourDelta?: number;
+    twentyFourHourDelta?: number;
     fingerprint?: string;
     components?: any;
     isCraftable: boolean;

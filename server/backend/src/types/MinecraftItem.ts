@@ -1,3 +1,9 @@
-import { ItemUpdate } from "diff-store/src/types/Item";
+import { Item } from "diff-store/src/types/Item";
 
-export type MinecraftItem = Omit<ItemUpdate, "countHistory">
+export type MinecraftItem = Omit<
+    Item,
+    "fiveMinAgo" | "oneHourDelta" | "twentyFourHourDelta"
+>;
+
+export type MinecraftItemUpdate = Partial<MinecraftItem> &
+    Pick<MinecraftItem, "id">;

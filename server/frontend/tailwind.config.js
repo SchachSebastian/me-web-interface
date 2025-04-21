@@ -2,9 +2,9 @@
 export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
-      extend: {
+        extend: {
             backgroundImage: {
-                "minecraft-bg": "url('/minecraftBg.png')",
+                "minecraft-bg": "url('/minecraftBg.webp')",
             },
         },
     },

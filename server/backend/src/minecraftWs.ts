@@ -9,8 +9,7 @@ import http from "http";
 import typia from 'typia';
 import WebSocket, { Data } from "ws";
 import { sendClientMessage } from "./clientWs";
-import { MinecraftItem } from './types/MinecraftItem';
-import { strict } from 'assert';
+import { MinecraftItem, MinecraftItemUpdate } from './types/MinecraftItem';
 
 dotenv.config();
 
@@ -35,13 +34,13 @@ let messageCallbacks: MessageCallback[] = [
     {
         type: "inventory-update",
         callback: (data: any) => {
-            if (!typia.equals<MinecraftItem[]>(data)) {
+            if (!typia.equals<MinecraftItemUpdate[]>(data)) {
                 console.error("Invalid inventory update data:", data);
                 return false;
             }
             const validUpdates = data.filter((update) => {
                 const item = $items.get().find((item) => item.id === update.id);
-                if (!item && !typia.is<Omit<Item,"countHistory">>(update)) {
+                if (!item && !typia.is<MinecraftItem>(update)) {
                     console.error("Invalid item update:", update);
                     return false;
                 }
