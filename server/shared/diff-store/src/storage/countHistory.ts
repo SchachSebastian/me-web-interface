@@ -50,14 +50,14 @@ export const calculateCountDelta = (
 
     for (const ele of history.history) {
         if (
-            ele.timestamp >= from &&
-            (earliest === null || ele.timestamp < earliest.timestamp)
+            ele.timestamp <= from &&
+            (earliest === null || ele.timestamp > earliest.timestamp)
         ) {
             earliest = ele;
         }
         if (
-            ele.timestamp <= to &&
-            (latest === null || ele.timestamp > latest.timestamp)
+            ele.timestamp >= to &&
+            (latest === null || ele.timestamp < latest.timestamp)
         ) {
             latest = ele;
         }
