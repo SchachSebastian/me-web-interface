@@ -84,14 +84,28 @@ local function sendStorage()
     end
 end
 
+local function ping()
+    while true do
+        sleep(5)
+        if ws then
+            ws.send(textutils.serialiseJSON({
+                type = "ping"
+            }))
+        end
+    end
+end
+
 local initMessage = textutils.serialiseJSON({
     type = "init"
 })
 local function wsHandler()
+    if ws then
+        ws.close()
+    end
     ws = http.websocket(url, headers)
     ws.send(initMessage)
     resetStorage()
-    parallel.waitForAll(sendInventory, handleMessages, sendStorage)
+    parallel.waitForAll(sendInventory, handleMessages, sendStorage, ping)
 end
 
 -- Startup delay
