@@ -10,7 +10,7 @@ const NumberInput: React.FC<NumberInputProps> = ({ onValueSubmit }) => {
 
     const handleIncrement = (amount: number) => {
         setValue((prev) => {
-            if(prev === 1) return amount;
+            if(prev === 1 && amount !== 1) return amount;
             return prev + amount;
         });
     };
