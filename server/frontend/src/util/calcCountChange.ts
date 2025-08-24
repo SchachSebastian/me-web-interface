@@ -3,8 +3,8 @@ import {
     FIVE_MINUTES,
     ONE_HOUR,
     TWENTY_FOUR_HOURS,
-} from "diff-store/src/storage/countHistory";
-import { Item } from "diff-store/src/types/Item";
+} from "diff-store";
+import { Item } from "diff-store";
 
 export const calcCountChange = (item: Item) => {
     const timestamp = Date.now();

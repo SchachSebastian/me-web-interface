@@ -1,5 +1,5 @@
-import { $items } from "diff-store/src/storage/items";
-import { Item } from "diff-store/src/types/Item";
+import { $items } from "diff-store";
+import { Item } from "diff-store";
 import { useRef, useState } from "react";
 import { VirtuosoGrid } from "react-virtuoso";
 import Dialog from "./components/Dialog";

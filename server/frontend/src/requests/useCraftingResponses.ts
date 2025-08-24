@@ -1,4 +1,4 @@
-import { Item } from "diff-store/src/types/Item";
+import { Item } from "diff-store";
 import { useState } from "react";
 import useSubscribe from "./useSubsribe";
 

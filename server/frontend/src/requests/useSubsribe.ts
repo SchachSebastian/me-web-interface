@@ -1,4 +1,4 @@
-import { MessageCallback } from "diff-store/src/types/MessageCallback";
+import { MessageCallback } from "diff-store";
 import { useWebSocket } from "../WebsocketProvider";
 import { useEffect } from "react";
 

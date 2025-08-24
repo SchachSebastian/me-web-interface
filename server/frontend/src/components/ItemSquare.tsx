@@ -1,4 +1,4 @@
-import { Item } from "diff-store/src/types/Item";
+import { Item } from "diff-store";
 import { useEffect, useRef, useState } from "react";
 import { withErrorBoundary } from "react-error-boundary";
 import { formatCount } from "../util/formatCount";

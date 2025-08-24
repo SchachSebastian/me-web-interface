@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react";
-import { $items } from "diff-store/src/storage/items";
+import { $items } from "diff-store";
 import ReactDOM from "react-dom";
 import { useCraftingResponses } from "../requests/useCraftingResponses";
 export const NotificationArea = () => {

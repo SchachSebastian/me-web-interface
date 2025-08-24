@@ -1,5 +1,5 @@
 import { atom } from "nanostores";
-import { Storage } from "../types/Storage";
+import { Storage } from "../types/Storage.js";
 
 export const $storage = atom<Storage>({
     item: {

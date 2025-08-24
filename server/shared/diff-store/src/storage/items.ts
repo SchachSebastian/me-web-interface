@@ -1,5 +1,5 @@
 import { atom } from "nanostores";
-import { Item, ItemUpdate } from "../types/Item";
+import { Item, ItemUpdate } from "../types/Item.js";
 
 export const $items = atom<Item[]>([]);
 

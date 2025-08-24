@@ -1,4 +1,4 @@
-import { Item } from "diff-store/src/types/Item";
+import { Item } from "diff-store";
 import { isEnchantedItem } from "./isEnchantedItem";
 
 const matchesItem = (item: Item, term: string) => {

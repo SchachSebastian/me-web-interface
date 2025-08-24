@@ -1,7 +1,7 @@
 import { atom } from "nanostores";
-import { CountHistory, CountHistoryUpdate } from "../types/CountHistory";
-import CountHistoryElement from "../types/CountHistoryElement";
-import { Item } from "../types/Item";
+import { CountHistory, CountHistoryUpdate } from "../types/CountHistory.js";
+import CountHistoryElement from "../types/CountHistoryElement.js";
+import { Item } from "../types/Item.js";
 
 export const FIVE_MINUTES = 1000 * 60 * 5;
 export const ONE_HOUR = 1000 * 60 * 60;

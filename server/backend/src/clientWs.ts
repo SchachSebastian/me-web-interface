@@ -1,7 +1,7 @@
-import { $items } from "diff-store/src/storage/items";
-import { $storage } from "diff-store/src/storage/storage";
-import { Message } from "diff-store/src/types/Message";
-import { MessageCallback } from "diff-store/src/types/MessageCallback";
+import { MessageCallback } from 'diff-store';
+import { $items } from "diff-store";
+import { $storage } from "diff-store";
+import { Message } from "diff-store";
 import dotenv from "dotenv";
 import typia from "typia";
 import WebSocket from "ws";

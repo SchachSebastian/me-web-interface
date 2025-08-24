@@ -1,9 +1,8 @@
-import { $items, updateItemStorage } from 'diff-store/src/storage/items';
-import { $storage } from "diff-store/src/storage/storage";
-import { Item } from "diff-store/src/types/Item";
-import { Message } from "diff-store/src/types/Message";
-import { MessageCallback } from "diff-store/src/types/MessageCallback";
-import { Storage } from "diff-store/src/types/Storage";
+import { $items, updateItemStorage } from 'diff-store';
+import { $storage } from "diff-store";
+import { Message } from "diff-store";
+import { MessageCallback } from "diff-store";
+import { Storage } from "diff-store";
 import dotenv from "dotenv";
 import http from "http";
 import typia from 'typia';

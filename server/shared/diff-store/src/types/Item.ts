@@ -1,4 +1,4 @@
-import CountHistoryElement from "./CountHistoryElement";
+import CountHistoryElement from "./CountHistoryElement.js";
 
 export type Item = {
     id: string;

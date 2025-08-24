@@ -1,4 +1,4 @@
-import { Item } from "diff-store/src/types/Item";
+import { Item } from "diff-store";
 import { useLayoutEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { calcCountChange } from "../util/calcCountChange";

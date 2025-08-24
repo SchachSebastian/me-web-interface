@@ -8,14 +8,11 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "../.",
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
       ],
-      "diff-store/*": [
-        "../shared/diff-store/dist/*"
-      ]
     },
     "plugins": [
       {

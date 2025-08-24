@@ -4,10 +4,10 @@ import {
     ONE_HOUR,
     TWENTY_FOUR_HOURS,
     updateCountHistory,
-} from "diff-store/src/storage/countHistory";
-import { $items, updateItemStorage } from "diff-store/src/storage/items";
-import { CountHistoryUpdate } from "diff-store/src/types/CountHistory";
-import { ItemUpdate } from "diff-store/src/types/Item";
+} from "diff-store";
+import { $items, updateItemStorage } from "diff-store";
+import { CountHistoryUpdate } from "diff-store";
+import { ItemUpdate } from "diff-store";
 import { sendClientMessage } from "../clientWs";
 import chunkArray from "../util/chunkArray";
 

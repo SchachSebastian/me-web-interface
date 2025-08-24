@@ -1,4 +1,4 @@
-import { Item } from "diff-store/src/types/Item";
+import { Item } from "diff-store";
 
 export const isEnchantedItem = (item: Item): boolean => {
     if (!item.components) return false;
