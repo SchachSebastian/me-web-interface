@@ -1,4 +1,4 @@
-local ae2 = peripheral.find("meBridge")
+local bridge = require("bridge")
 local util = require("util")
 local deepEqual = util.deepEqual
 
@@ -6,12 +6,12 @@ local storage = {}
 local function getMeStorage()
     local new = {
         item = {
-            total = ae2.getTotalItemStorage(),
-            used = ae2.getUsedItemStorage()
+            total = bridge.getTotalItemStorage(),
+            used = bridge.getUsedItemStorage()
         },
         fluid = {
-            total = ae2.getTotalFluidStorage(),
-            used = ae2.getUsedFluidStorage()
+            total = bridge.getTotalFluidStorage(),
+            used = bridge.getUsedFluidStorage()
         }
     }
     if deepEqual(storage, new) then

@@ -16,6 +16,10 @@ shell.run(
 shell.run(
     "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/config.lua",
     "meWebInterface/config.lua")
+shell.run(
+    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/bridge.lua",
+    "meWebInterface/bridge.lua")
+
 
 shell.run(
     "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/startup.lua")

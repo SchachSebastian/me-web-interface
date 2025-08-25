@@ -1,4 +1,4 @@
-local ae2 = peripheral.find("meBridge")
+local bridge = require("bridge")
 local util = require("util")
 local getDiff = util.getDiff
 
@@ -21,8 +21,8 @@ end
 local function getNewInventory()
     local inventory = {}
 
-    local items = ae2.listItems()
-    local craftableItems = ae2.listCraftableItems()
+    local items = bridge.getItems()
+    local craftableItems = bridge.getCraftableItems()
     for _, craftableItem in ipairs(craftableItems) do
         if craftableItem.count == 0 then
             table.insert(items, craftableItem)
@@ -47,8 +47,8 @@ local function getNewInventory()
         table.insert(inventory, new_item)
     end
 
-    local fluids = ae2.listFluids()
-    local craftableFluids = ae2.listCraftableFluids()
+    local fluids = bridge.getFluids()
+    local craftableFluids = bridge.getCraftableFluids()
     for _, craftableFluid in ipairs(craftableFluids) do
         if craftableFluid.count == 0 then
             table.insert(fluids, craftableFluid)
@@ -73,13 +73,20 @@ local function getNewInventory()
         table.insert(inventory, new_fluid)
     end
 
-    local gases = ae2.listGases()
-    for _, gas in ipairs(gases) do
+    local chemicals = bridge.getChemicals()
+    local craftableChemicals = bridge.getCraftableChemicals()
+    for _, craftableChemical in ipairs(craftableChemicals) do
+        if craftableChemical.count == 0 then
+            table.insert(chemicals, craftableChemical)
+        end
+    end
+
+    for _, chemical in ipairs(chemicals) do
         local new_gas = {
-            id = gas.name .. "#gas",
-            name = gas.name,
-            count = gas.count/1000,
-            displayName = cleanDisplayName(gas.displayName),
+            id = chemical.name .. "#chemical",
+            name = chemical.name,
+            count = chemical.count/1000,
+            displayName = cleanDisplayName(chemical.displayName),
             isCraftable = false,
             isGas = true
         }

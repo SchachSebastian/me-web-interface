@@ -1,7 +1,7 @@
-local ae2 = peripheral.find("meBridge")
+local bridge = require("bridge")
 
 local function handleCraftingRequest(fingerprint, count)
-    local success, err = ae2.craftItem({
+    local success, err = bridge.craftItem({
         fingerprint = fingerprint,
         count = count
     })
