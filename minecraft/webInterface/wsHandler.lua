@@ -1,16 +1,14 @@
-local getMeInventory = require("getMeInventory")
-local getMeInventoryDiff = getMeInventory.getMeInventoryDiff
-local resetStorage = getMeInventory.resetStorage
+local inventory = require("inventory")
+local getInventoryDiff = inventory.getInventoryDiff
+local resetStorage = inventory.resetStorage
 
 local craftingHandler = require("craftingHandler")
 local handleCraftingRequest = craftingHandler.handleCraftingRequest
 
-local getMeStorage = require("getMeStorage")
-
-print("Started")
+local getStorage = require("getStorage")
 
 local config = require("config")
-local url = config.url
+local url = config.url .. "/mc"
 local maxItemsPerMessage = config.maxItemsPerMessage
 local headers = {}
 headers["Secret"] = config.secret
@@ -18,6 +16,7 @@ headers["Secret"] = config.secret
 local ws
 
 local function sendList(list, type)
+    print("Sending " .. type .. " message with " .. #list .. " items")
     for i = 1, #list, maxItemsPerMessage do
         local chunk = {}
         for j = i, math.min(i + maxItemsPerMessage - 1, #list) do
@@ -65,7 +64,7 @@ end
 
 local function sendInventory()
     while true do
-        local inventory = getMeInventoryDiff()
+        local inventory = getInventoryDiff()
         sendList(inventory, "inventory-update")
     end
 end
@@ -73,7 +72,7 @@ end
 local function sendStorage()
     while true do
         sleep(0.1)
-        local data = getMeStorage()
+        local data = getStorage()
         if data then
             ws.send(textutils.serialiseJSON({
                 type = "storage-update",
@@ -98,19 +97,18 @@ end
 local initMessage = textutils.serialiseJSON({
     type = "init"
 })
+
 local function wsHandler()
     if ws then
         ws.close()
     end
     ws = http.websocket(url, headers)
+    if (not ws) then
+        error("Failed to connect to WebSocket at " .. url)
+    end
     ws.send(initMessage)
     resetStorage()
     parallel.waitForAll(sendInventory, handleMessages, sendStorage, ping)
 end
 
--- Startup delay
-sleep(5)
-
-while true do
-    pcall(wsHandler)
-end
+return wsHandler

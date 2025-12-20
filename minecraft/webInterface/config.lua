@@ -1,5 +1,5 @@
 local config = {
-    url = "",
+    url = "ws://<ip>",
     secret = "secret",
     maxItemsPerMessage = 100,
     system = "me",

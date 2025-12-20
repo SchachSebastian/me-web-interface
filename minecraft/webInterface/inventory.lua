@@ -96,7 +96,7 @@ local function getNewInventory()
     return inventory
 end
 
-local function getMeInventoryDiff()
+local function getInventoryDiff()
     local items = getNewInventory()
     local list = {}
     local seenItems = {}
@@ -124,9 +124,6 @@ local function getMeInventoryDiff()
             storage[item.id] = nil
         end
     end
-
-    print("Sending", #list, "items")
-
     return list
 end
 
@@ -135,6 +132,6 @@ local function resetStorage()
 end
 
 return {
-    getMeInventoryDiff = getMeInventoryDiff,
+    getInventoryDiff = getInventoryDiff,
     resetStorage = resetStorage,
 };

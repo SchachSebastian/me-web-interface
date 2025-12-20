@@ -29,7 +29,7 @@ WORKDIR /server/backend
 RUN npm install
 RUN npm run build
 
-FROM gcr.io/distroless/nodejs24-debian12 AS runtime
+FROM dhi.io/node:20-alpine3.22 AS runtime
 
 WORKDIR /server/backend
 COPY --from=frontend /server/frontend/dist/. ./public/.

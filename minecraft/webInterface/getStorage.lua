@@ -3,7 +3,7 @@ local util = require("util")
 local deepEqual = util.deepEqual
 
 local storage = {}
-local function getMeStorage()
+local function getStorage()
     local new = {
         item = {
             total = bridge.getTotalItemStorage(),
@@ -20,4 +20,4 @@ local function getMeStorage()
     return new
 end
 
-return getMeStorage
+return getStorage

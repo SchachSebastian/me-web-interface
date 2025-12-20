@@ -1,25 +1,13 @@
-shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/wsHandler.lua",
-    "meWebInterface/wsHandler.lua")
-shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/craftingHandler.lua",
-    "meWebInterface/craftingHandler.lua")
-shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/getMeInventory.lua",
-    "meWebInterface/getMeInventory.lua")
-shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/getMeStorage.lua",
-    "meWebInterface/getMeStorage.lua")
-shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/util.lua",
-    "meWebInterface/util.lua")
-shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/config.lua",
-    "meWebInterface/config.lua")
-shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/bridge.lua",
-    "meWebInterface/bridge.lua")
+local url = "https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/"
+
+shell.run("wget " .. url .. "webInterface/wsHandler.lua","webInterface/wsHandler.lua")
+shell.run("wget " .. url .. "webInterface/craftingHandler.lua","webInterface/craftingHandler.lua")
+shell.run("wget " .. url .. "webInterface/inventory.lua","webInterface/inventory.lua")
+shell.run("wget " .. url .. "webInterface/getMeStorage.lua","webInterface/getMeStorage.lua")
+shell.run("wget " .. url .. "webInterface/util.lua","webInterface/util.lua")
+shell.run("wget " .. url .. "webInterface/config.lua","webInterface/config.lua")
+shell.run("wget " .. url .. "webInterface/bridge.lua","webInterface/bridge.lua")
+shell.run("wget " .. url .. "webInterface/verifySetup.lua","webInterface/verifySetup.lua")
 
 
-shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/startup.lua")
+shell.run("wget " .. url .. "startup.lua")
