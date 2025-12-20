@@ -5,7 +5,9 @@ local resetStorage = inventory.resetStorage
 local craftingHandler = require("craftingHandler")
 local handleCraftingRequest = craftingHandler.handleCraftingRequest
 
-local getStorage = require("getStorage")
+local state = require("getState")
+local getState = state.getState
+local resetStateStorage = state.resetStorage
 
 local config = require("config")
 local url = config.url .. "/mc"
@@ -72,7 +74,7 @@ end
 local function sendState()
     while true do
         sleep(1)
-        local data = getStorage()
+        local data = getState()
         if data then
             ws.send(textutils.serialiseJSON({
                 type = "state-update",
@@ -108,6 +110,7 @@ local function wsHandler()
     end
     ws.send(initMessage)
     resetStorage()
+    resetStateStorage()
     parallel.waitForAll(sendInventory, handleMessages, sendState, ping)
 end
 
