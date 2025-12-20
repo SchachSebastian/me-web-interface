@@ -8,6 +8,7 @@ shell.run("wget " .. url .. "webInterface/util.lua","webInterface/util.lua")
 shell.run("wget " .. url .. "webInterface/config.lua","webInterface/config.lua")
 shell.run("wget " .. url .. "webInterface/bridge.lua","webInterface/bridge.lua")
 shell.run("wget " .. url .. "webInterface/verifySetup.lua","webInterface/verifySetup.lua")
+shell.run("wget " .. url .. "webInterface/entry.lua","webInterface/entry.lua")
 
 
 shell.run("wget " .. url .. "startup.lua")
