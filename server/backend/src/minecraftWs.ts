@@ -72,7 +72,7 @@ let messageCallbacks: MessageCallback[] = [
     {
         type: "state-update",
         callback: (data: any) => {
-            if (!typia.equals<State>(data)) {
+            if (!typia.equals<Partial<State>>(data)) {
                 console.error("Invalid state data:", data);
                 return false;
             }

@@ -8,7 +8,10 @@ export const useNetworkState = () => {
         type: "state-update",
         callback: (state: State) => {
             console.log("Received state update:", state);
-            $state.set(state);
+            $state.set({
+                ...$state.get(),
+                ...state,
+            });
         },
     });
     return useStore($state);

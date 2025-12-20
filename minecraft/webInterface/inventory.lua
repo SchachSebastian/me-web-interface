@@ -97,6 +97,10 @@ local function getNewInventory()
 end
 
 local function getInventoryDiff()
+    if (bridge == nil or not bridge.isConnected() or not bridge.isOnline()) then
+        return {}
+    end
+    
     local items = getNewInventory()
     local list = {}
     local seenItems = {}

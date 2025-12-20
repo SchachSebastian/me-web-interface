@@ -65,11 +65,30 @@ function App() {
         }
         setClickedItem(undefined);
     };
-
-    const itemPercentage = state.itemStorage * 100;
-    const fluidPercentage = state.fluidStorage * 100;
-    const chemicalPercentage = state.chemicalStorage * 100;
-    const energyPercentage = state.energyStorage * 100;
+    
+    let statusMessage;
+    switch (state.status) {
+        case "bridge_missing":
+            statusMessage = "🔴 Bridge Missing";
+            break
+            case "network_disconnected":
+            statusMessage = "🔴 Network Disconnected";
+            break;
+        case "network_offline":
+            statusMessage = "🟠 Network Offline"
+            break;
+        case "network_connected":
+            statusMessage = "🟢 Connected"
+            break;
+        case "minecraft_disconnected":
+            statusMessage = "🔴 Minecraft Offline";
+            break;
+        case "server_disconnected":
+            statusMessage = "🔴 Server Offline"
+            break;
+        default:
+            statusMessage = "⚪ Unknown Status"
+    }
 
     return (
         <>
@@ -82,34 +101,38 @@ function App() {
                         >
                             Terminal
                         </div>
+
                         <div
                             title="test"
                             className="pointer-events-none basis-4/12 min-w-fit flex-grow flex-shrink text-right"
                         >
+                            {statusMessage}
+                        </div>
+                        <div className="pointer-events-none flex-shrink min-w-fit text-right">
                             {"📦 "}
-                            {!Number.isNaN(itemPercentage)
-                                ? itemPercentage.toFixed(2)
+                            {state.itemStorage
+                                ? (state.itemStorage * 100).toFixed(2)
                                 : "-"}{" "}
                             %
                         </div>
                         <div className="pointer-events-none flex-shrink min-w-fit text-right">
                             {"💧 "}
-                            {!Number.isNaN(fluidPercentage)
-                                ? fluidPercentage.toFixed(2)
+                            {state.fluidStorage
+                                ? (state.fluidStorage * 100).toFixed(2)
                                 : "-"}{" "}
                             %
                         </div>
                         <div className="pointer-events-none flex-shrink min-w-fit text-right">
                             {"🧪 "}
-                            {!Number.isNaN(chemicalPercentage)
-                                ? chemicalPercentage.toFixed(2)
+                            {state.chemicalStorage
+                                ? (state.chemicalStorage * 100).toFixed(2)
                                 : "-"}{" "}
                             %
                         </div>
                         <div className="pointer-events-none flex-shrink min-w-fit text-right">
                             {"⚡ "}
-                            {!Number.isNaN(energyPercentage)
-                                ? energyPercentage.toFixed(2)
+                            {state.energyStorage
+                                ? (state.energyStorage * 100).toFixed(2)
                                 : "-"}{" "}
                             %
                         </div>

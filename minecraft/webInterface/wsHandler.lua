@@ -5,7 +5,7 @@ local resetStorage = inventory.resetStorage
 local craftingHandler = require("craftingHandler")
 local handleCraftingRequest = craftingHandler.handleCraftingRequest
 
-local state = require("getState")
+local state = require("state")
 local getState = state.getState
 local resetStateStorage = state.resetStorage
 
@@ -111,7 +111,7 @@ local function wsHandler()
     ws.send(initMessage)
     resetStorage()
     resetStateStorage()
-    parallel.waitForAll(sendInventory, handleMessages, sendState, ping)
+    parallel.waitForAll(sendState, sendInventory, handleMessages, ping)
 end
 
 return wsHandler

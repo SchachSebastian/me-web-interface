@@ -31,7 +31,7 @@ const matchesItem = (item: Item, term: string) => {
     } else if (term.startsWith("=")) {
         return item.count === Number(term.slice(1));
     } else {
-        return item.displayName.toLowerCase().includes(term);
+        return (item.displayName ?? "").toLowerCase().includes(term);
     }
 }
 export const filterItems = (items: Item[], searchText: string) => {
