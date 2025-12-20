@@ -69,13 +69,13 @@ local function sendInventory()
     end
 end
 
-local function sendStorage()
+local function sendState()
     while true do
-        sleep(0.1)
+        sleep(1)
         local data = getStorage()
         if data then
             ws.send(textutils.serialiseJSON({
-                type = "storage-update",
+                type = "state-update",
                 data = data
             }))
 
@@ -108,7 +108,7 @@ local function wsHandler()
     end
     ws.send(initMessage)
     resetStorage()
-    parallel.waitForAll(sendInventory, handleMessages, sendStorage, ping)
+    parallel.waitForAll(sendInventory, handleMessages, sendState, ping)
 end
 
 return wsHandler

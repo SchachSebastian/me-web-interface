@@ -1,14 +1,15 @@
-import { $items, updateItemStorage } from 'diff-store';
-import { $storage } from "diff-store";
+import { $items, defaultState, updateItemStorage } from 'diff-store';
+import { $state } from "diff-store";
 import { Message } from "diff-store";
 import { MessageCallback } from "diff-store";
-import { Storage } from "diff-store";
+import { State } from "diff-store";
 import dotenv from "dotenv";
 import http from "http";
 import typia from 'typia';
 import WebSocket, { Data } from "ws";
 import { sendClientMessage } from "./clientWs";
 import { MinecraftItem, MinecraftItemUpdate } from './types/MinecraftItem';
+import { setMinecraftResponseNow } from './service/serverState';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ let messageCallbacks: MessageCallback[] = [
         callback: () => {
             console.log("Received INIT message");
             $items.set([]);
+            $state.set(defaultState);
             sendClientMessage({
                 type: "reset",
             });
@@ -68,16 +70,19 @@ let messageCallbacks: MessageCallback[] = [
         },
     },
     {
-        type: "storage-update",
+        type: "state-update",
         callback: (data: any) => {
-            if (!typia.equals<Storage>(data)) {
-                console.error("Invalid storage data:", data);
+            if (!typia.equals<State>(data)) {
+                console.error("Invalid state data:", data);
                 return false;
             }
-            $storage.set(data);
-            console.log("Received Storage Update message");
+            $state.set({
+                ...$state.get(),
+                ...data,
+            });
+            console.log("Received State Update message");
             sendClientMessage({
-                type: "storage-update",
+                type: "state-update",
                 data: data,
             });
         },
@@ -109,6 +114,7 @@ export function handleMinecraftWs(
                 socket.close(1008);
                 return;
             }
+            setMinecraftResponseNow();
             messageCallbacks
                 .filter((c) => c.type === received.type)
                 .forEach((c) => {

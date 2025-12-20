@@ -11,7 +11,7 @@ import { useLocalStorage } from "./hooks/useLocalStorage";
 import { useQueryParam } from "./hooks/useQueryParam";
 import useVirtuosoComponents from "./hooks/useVirtuosoComponents";
 import { useMeItems } from "./requests/useMeItems";
-import { useMeStorage } from "./requests/useMeStorage";
+import { useNetworkState } from "./requests/useNetworkState";
 import { useResetMessage } from "./requests/useResetMessage";
 import { filterItems } from "./util/filterItems";
 import { useWebSocket } from "./WebsocketProvider";
@@ -19,7 +19,7 @@ import { useWebSocket } from "./WebsocketProvider";
 function App() {
     const [searchText, setSearchText] = useQueryParam("search", "");
     const [clickedItem, setClickedItem] = useState<Item>();
-    const [hoveredItem, setHoveredItem] = useState<Item>();
+    const [hoveredItemId, setHoveredItemId] = useState<Item['id']>();
     const [hoveredItemRef, setHoveredItemRef] =
         useState<React.RefObject<HTMLDivElement>>();
     const [openHelp, setOpenHelp] = useState(false);
@@ -29,7 +29,7 @@ function App() {
     const socket = useWebSocket();
 
     const items = useMeItems();
-    const storage = useMeStorage();
+    const state = useNetworkState();
 
     useResetMessage(() => $items.set([]));
 
@@ -66,8 +66,10 @@ function App() {
         setClickedItem(undefined);
     };
 
-    const itemPercentage = (storage.item.used / storage.item.total) * 100;
-    const fluidPercentage = (storage.fluid.used / storage.fluid.total) * 100;
+    const itemPercentage = state.itemStorage * 100;
+    const fluidPercentage = state.fluidStorage * 100;
+    const chemicalPercentage = state.chemicalStorage * 100;
+    const energyPercentage = state.energyStorage * 100;
 
     return (
         <>
@@ -80,7 +82,10 @@ function App() {
                         >
                             Terminal
                         </div>
-                        <div className="pointer-events-none basis-4/12 min-w-fit flex-grow flex-shrink text-right">
+                        <div
+                            title="test"
+                            className="pointer-events-none basis-4/12 min-w-fit flex-grow flex-shrink text-right"
+                        >
                             {"📦 "}
                             {!Number.isNaN(itemPercentage)
                                 ? itemPercentage.toFixed(2)
@@ -91,6 +96,20 @@ function App() {
                             {"💧 "}
                             {!Number.isNaN(fluidPercentage)
                                 ? fluidPercentage.toFixed(2)
+                                : "-"}{" "}
+                            %
+                        </div>
+                        <div className="pointer-events-none flex-shrink min-w-fit text-right">
+                            {"🧪 "}
+                            {!Number.isNaN(chemicalPercentage)
+                                ? chemicalPercentage.toFixed(2)
+                                : "-"}{" "}
+                            %
+                        </div>
+                        <div className="pointer-events-none flex-shrink min-w-fit text-right">
+                            {"⚡ "}
+                            {!Number.isNaN(energyPercentage)
+                                ? energyPercentage.toFixed(2)
                                 : "-"}{" "}
                             %
                         </div>
@@ -126,7 +145,7 @@ function App() {
                                             item: Item | undefined,
                                             ref?: React.RefObject<HTMLDivElement>
                                         ) => {
-                                            setHoveredItem(item);
+                                            setHoveredItemId(item?.id);
                                             setHoveredItemRef(ref);
                                         }}
                                         item={item}
@@ -246,9 +265,9 @@ function App() {
                     </div>
                 </div>
             </Dialog>
-            {hoveredItem && hoveredItemRef ? (
+            {hoveredItemId && hoveredItemRef ? (
                 <ItemTooltip
-                    item={hoveredItem}
+                    item={filteredItems.find((i) => i.id === hoveredItemId)!}
                     itemRef={hoveredItemRef}
                     containerRef={ref}
                 />

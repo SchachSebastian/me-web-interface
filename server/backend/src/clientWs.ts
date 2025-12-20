@@ -1,6 +1,6 @@
 import { MessageCallback } from 'diff-store';
 import { $items } from "diff-store";
-import { $storage } from "diff-store";
+import { $state } from "diff-store";
 import { Message } from "diff-store";
 import dotenv from "dotenv";
 import typia from "typia";
@@ -60,8 +60,8 @@ export function handleClientWs(socket: WebSocket) {
     });
     socket.send(
         JSON.stringify({
-            type: "storage-update",
-            data: $storage.get(),
+            type: "state-update",
+            data: $state.get(),
         } as Message)
     );
     sockets.push(socket);
