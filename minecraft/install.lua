@@ -1,4 +1,5 @@
-local url = "https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/"
+local branch = "main"
+local url = "https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/".. branch .."/minecraft/"
 
 shell.run("wget " .. url .. "webInterface/wsHandler.lua","webInterface/wsHandler.lua")
 shell.run("wget " .. url .. "webInterface/craftingHandler.lua","webInterface/craftingHandler.lua")
