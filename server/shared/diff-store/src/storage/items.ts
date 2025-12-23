@@ -10,7 +10,10 @@ export const updateItemStorage = (updates: ItemUpdate[]) => {
     const new_items = $items
         .get()
         .map((item) => {
-            const update = updates.find((update) => update.id === item.id);
+            const update = updates.find(
+                (update) =>
+                    update.id === item.id
+            );
             if (update) {
                 return {
                     ...item,
@@ -23,8 +26,14 @@ export const updateItemStorage = (updates: ItemUpdate[]) => {
     updates
         .filter(
             (update) =>
-                $items.get().find((item) => update.id === item.id) === undefined
+                $items
+                    .get()
+                    .find(
+                        (item) =>
+                            update.id === item.id &&
+                    ) === undefined
         )
+        .filter((item) => item.count !== -1)
         .forEach((item) => {
             new_items.push(item as Item);
         });

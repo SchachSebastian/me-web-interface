@@ -1,8 +1,8 @@
-import { Item } from "diff-store";
-import { useEffect, useRef, useState } from "react";
+import { $items, Item } from "diff-store";
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { withErrorBoundary } from "react-error-boundary";
 import { formatCount } from "../util/formatCount";
-import { getItemImagePath } from "../util/getItemImagePath";
+import { getItemImagePath, MissingImage } from "../util/getItemImagePath";
 import { hasEnchantmentEffect } from "../util/hasEnchantmentEffect";
 
 interface Props {
@@ -17,6 +17,9 @@ interface Props {
 const hoverDelay = 100; // milliseconds
 
 const ItemSquare = (props: Props) => {
+    if (props.item.count === -1) {
+        console.warn("Rendering item with count -1:", $items.get().find((item) => item.id === props.item.id));
+    }
     const [useFallbackImage, setUseFallbackImage] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -51,8 +54,8 @@ const ItemSquare = (props: Props) => {
     const handleImageUnavailable = useFallbackImage
         ? undefined
         : () => setUseFallbackImage(true);
-    let imageSrc = getItemImagePath(props.item);
-    if (useFallbackImage) imageSrc = "/missingItem.webp";
+    let imageSrc = useMemo(() => getItemImagePath(props.item),[props.item]);
+    if (useFallbackImage) imageSrc = MissingImage;
     return (
         <div
             style={{

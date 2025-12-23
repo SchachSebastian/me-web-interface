@@ -1,20 +1,24 @@
-import { $items, defaultState, updateItemStorage } from 'diff-store';
-import { $state } from "diff-store";
-import { Message } from "diff-store";
-import { MessageCallback } from "diff-store";
-import { State } from "diff-store";
+import {
+    $items,
+    $state,
+    defaultState,
+    Message,
+    MessageCallback,
+    State,
+    updateItemStorage,
+} from "diff-store";
 import dotenv from "dotenv";
 import http from "http";
-import typia from 'typia';
+import typia from "typia";
 import WebSocket, { Data } from "ws";
 import { sendClientMessage } from "./clientWs";
-import { MinecraftItem, MinecraftItemUpdate } from './types/MinecraftItem';
-import { setMinecraftResponseNow } from './service/serverState';
+import { setMinecraftResponseNow } from "./service/serverState";
+import { MinecraftItem, MinecraftItemUpdate } from "./types/MinecraftItem";
 
 dotenv.config();
 
 type CraftingResponse = {
-    fingerprint: string;
+    id: string;
     count: number;
     success: boolean;
 };
@@ -40,12 +44,19 @@ let messageCallbacks: MessageCallback[] = [
                 return false;
             }
             const validUpdates = data.filter((update) => {
-                const item = $items.get().find((item) => item.id === update.id);
-                if (!item && !typia.is<MinecraftItem>(update)) {
-                    console.error("Invalid item update:", update);
-                    return false;
+                const item = $items
+                    .get()
+                    .find(
+                        (item) => item.id === update.id
+                    );
+                if (
+                    (item && typia.is<MinecraftItemUpdate>(update)) ||
+                    typia.is<MinecraftItem>(update)
+                ) {
+                    return true;
                 }
-                return true;
+                console.error("Invalid item update:", update);
+                return false;
             });
             console.log("Received updates: " + validUpdates.length);
             updateItemStorage(validUpdates);
@@ -100,7 +111,7 @@ export function handleMinecraftWs(
         return;
     }
     console.log("[Minecraft WS] WebSocket connection established");
-    if (minecraftSocket) { 
+    if (minecraftSocket) {
         console.log("[Minecraft WS] Closing existing socket");
         minecraftSocket.close(1000);
     }

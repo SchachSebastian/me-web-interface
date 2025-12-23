@@ -19,7 +19,7 @@ const removeSocket = (socket: WebSocket) => {
 };
 
 type CraftingRequest = {
-    fingerprint: string;
+    id: string;
     count: number;
     secret: string;
 };
@@ -40,7 +40,7 @@ let messageCallbacks: MessageCallback[] = [
             sendMinecraftMessage({
                 type: "crafting-request",
                 data: {
-                    fingerprint: data.fingerprint,
+                    id: data.id,
                     count: data.count,
                 },
             });

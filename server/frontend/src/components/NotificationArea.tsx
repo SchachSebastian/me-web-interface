@@ -9,10 +9,8 @@ export const NotificationArea = () => {
     const firstResponse = craftingResponses[craftingResponses.length - 1];
     if (!firstResponse) return <></>;
 
-    const item = items.find(
-        (item) => item.fingerprint === firstResponse.fingerprint
-    );
-    const name = item?.displayName ?? firstResponse.fingerprint;
+    const item = items.find((item) => item.id === firstResponse.id);
+    const name = item?.displayName ?? (firstResponse.id as string);
 
     const isSuccess = firstResponse.success;
 

@@ -11,7 +11,7 @@ export type Item = {
     components?: any;
     isCraftable: boolean;
     isFluid?: boolean;
-    isChemical: boolean;
+    isChemical?: boolean;
 };
 
 export type ItemUpdate = Partial<Item> & Pick<Item, "id">;

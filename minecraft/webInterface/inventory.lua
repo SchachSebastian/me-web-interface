@@ -36,7 +36,7 @@ local function getNewInventory()
         end
 
         local new_item = {
-            id = item.fingerprint,
+            id = item.fingerprint + 'i',
             name = item.name,
             count = item.count,
             displayName = cleanDisplayName(item.displayName),
@@ -60,7 +60,7 @@ local function getNewInventory()
         end
 
         local new_fluid = {
-            id = fluid.fingerprint,
+            id = fluid.fingerprint + 'f',
             name = fluid.name,
             count = fluid.count/1000,
             displayName = cleanDisplayName(fluid.displayName),
@@ -81,7 +81,7 @@ local function getNewInventory()
 
     for _, chemical in ipairs(chemicals) do
         local new_gas = {
-            id = chemical.fingerprint,
+            id = chemical.fingerprint + 'c',
             name = chemical.name,
             count = chemical.count/1000,
             displayName = cleanDisplayName(chemical.displayName),
@@ -104,7 +104,7 @@ local function getInventoryDiff()
     local seenItems = {}
 
     for _, item in ipairs(items) do
-        local item_key = item.id
+        local item_key = item.id + (tostring(item.isChemical) .. tostring(item.isFluid))
         local saved_item = storage[item_key] or {}
 
         local diff = getDiff(saved_item, item)
@@ -117,13 +117,15 @@ local function getInventoryDiff()
     end
 
     for _, item in pairs(storage) do
-        if not seenItems[item.id] then
+        local item_key = item.id + (tostring(item.isChemical) .. tostring(item.isFluid))
+
+        if not seenItems[item_key] then
 
             table.insert(list, {
                 id = item.id,
                 count = -1
             })
-            storage[item.id] = nil
+            storage[item_key] = nil
         end
     end
     return list

@@ -55,7 +55,7 @@ function App() {
                 JSON.stringify({
                     type: "crafting-request",
                     data: {
-                        fingerprint: clickedItem.id,
+                        id: clickedItem.id,
                         count: value,
                         secret: secret,
                     },
