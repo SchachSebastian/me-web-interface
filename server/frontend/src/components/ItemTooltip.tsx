@@ -118,13 +118,10 @@ export const ItemTooltip = (props: Props) => {
                 <div className="text-gray-400 font-mono text-sm mb-1">
                     {props.item.name}
                 </div>
-                {/* <div className="text-gray-400 font-mono text-sm mb-1">
-                            {JSON.stringify(props.item.components, null, 2)}
-                        </div>  */}
                 <AdditionalItemInfo item={props.item} />
                 <div className="text-blue-400 text-lg italic">{mod}</div>
                 <div className="text-gray-400 font-mono text-xs">
-                    {props.item.fingerprint}
+                    {props.item.id}
                 </div>
             </div>
         </div>,

@@ -1,5 +1,4 @@
 import { Item } from "diff-store";
-import { ReactNode } from "react";
 
 type Props = {
     item: Item;

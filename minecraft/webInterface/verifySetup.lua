@@ -6,6 +6,13 @@ local system = config.system
 local function verifySetup()
     print("Verifying system setup...")
 
+    -- Check if a bridge peripheral is connected
+    if bridge == nil then
+    error("Peripheral is not connected, connect a " .. system .. "_bridge to the computer", 0)
+    else
+        print("Peripheral " .. system .. "_bridge is connected")
+    end
+
     -- Check if the bridge peripheral is available
     if bridge.peripheralDisabled then
         error("Peripheral is disabled, enable the " .. system .. "_bridge in the config", 0)

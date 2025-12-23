@@ -15,7 +15,20 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT) : 80;
 const app = createHttpServer();
 const server = http.createServer(app);
 
-const ws = new WebSocketServer({ server });
+const ws = new WebSocketServer({
+    server,
+    perMessageDeflate: {
+        zlibDeflateOptions: {
+            level: 6,
+        },
+        zlibInflateOptions: {
+            chunkSize: 10 * 1024,
+        },
+        clientNoContextTakeover: true,
+        serverNoContextTakeover: true,
+        threshold: 512,
+    },
+});
 ws.on("connection", (socket, req) => {
     console.log("Incoming Websocket Connection");
     if (req.url === "/api") {

@@ -38,7 +38,6 @@ local function getNewInventory()
         local new_item = {
             id = item.fingerprint,
             name = item.name,
-            fingerprint = item.fingerprint,
             count = item.count,
             displayName = cleanDisplayName(item.displayName),
             components = components,
@@ -61,9 +60,8 @@ local function getNewInventory()
         end
 
         local new_fluid = {
-            id = fluid.fingerprint .. "#fluid",
+            id = fluid.fingerprint,
             name = fluid.name,
-            fingerprint = fluid.fingerprint,
             count = fluid.count/1000,
             displayName = cleanDisplayName(fluid.displayName),
             components = components,
@@ -83,12 +81,12 @@ local function getNewInventory()
 
     for _, chemical in ipairs(chemicals) do
         local new_gas = {
-            id = chemical.name .. "#chemical",
+            id = chemical.fingerprint,
             name = chemical.name,
             count = chemical.count/1000,
             displayName = cleanDisplayName(chemical.displayName),
             isCraftable = false,
-            isGas = true
+            isChemical = true
         }
         table.insert(inventory, new_gas)
     end

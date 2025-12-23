@@ -9,7 +9,7 @@ interface Props {
     item: Item;
     onClick?: () => void;
     setHoveredItem?: (
-        item: Item | undefined,
+        item: Item['id'] | undefined,
         ref?: React.RefObject<HTMLDivElement>
     ) => void;
     style?: React.CSSProperties;
@@ -29,7 +29,7 @@ const ItemSquare = (props: Props) => {
     const handlePointerEnter = () => {
         timeoutRef.current = setTimeout(() => {
             if (props.setHoveredItem) {
-                props.setHoveredItem(props.item, ref);
+                props.setHoveredItem(props.item.id, ref);
             }
         }, hoverDelay);
     };

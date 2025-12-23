@@ -8,11 +8,10 @@ export type Item = {
     fiveMinAgo?: CountHistoryElement;
     oneHourDelta?: number;
     twentyFourHourDelta?: number;
-    fingerprint?: string;
     components?: any;
     isCraftable: boolean;
     isFluid?: boolean;
-    isGas?: boolean;
+    isChemical: boolean;
 };
 
 export type ItemUpdate = Partial<Item> & Pick<Item, "id">;

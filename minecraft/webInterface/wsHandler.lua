@@ -66,6 +66,7 @@ end
 
 local function sendInventory()
     while true do
+        sleep(0.1)
         local inventory = getInventoryDiff()
         sendList(inventory, "inventory-update")
     end

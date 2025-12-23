@@ -1,5 +1,4 @@
-import { $items } from "diff-store";
-import { Item } from "diff-store";
+import { $items, Item } from "diff-store";
 import { useRef, useState } from "react";
 import { VirtuosoGrid } from "react-virtuoso";
 import Dialog from "./components/Dialog";
@@ -19,7 +18,7 @@ import { useWebSocket } from "./WebsocketProvider";
 function App() {
     const [searchText, setSearchText] = useQueryParam("search", "");
     const [clickedItem, setClickedItem] = useState<Item>();
-    const [hoveredItemId, setHoveredItemId] = useState<Item['id']>();
+    const [hoveredItemId, setHoveredItemId] = useState<Item["id"]>();
     const [hoveredItemRef, setHoveredItemRef] =
         useState<React.RefObject<HTMLDivElement>>();
     const [openHelp, setOpenHelp] = useState(false);
@@ -56,7 +55,7 @@ function App() {
                 JSON.stringify({
                     type: "crafting-request",
                     data: {
-                        fingerprint: clickedItem.fingerprint,
+                        fingerprint: clickedItem.id,
                         count: value,
                         secret: secret,
                     },
@@ -65,29 +64,29 @@ function App() {
         }
         setClickedItem(undefined);
     };
-    
+
     let statusMessage;
     switch (state.status) {
         case "bridge_missing":
             statusMessage = "🔴 Bridge Missing";
-            break
-            case "network_disconnected":
+            break;
+        case "network_disconnected":
             statusMessage = "🔴 Network Disconnected";
             break;
         case "network_offline":
-            statusMessage = "🟠 Network Offline"
+            statusMessage = "🟠 Network Offline";
             break;
         case "network_connected":
-            statusMessage = "🟢 Connected"
+            statusMessage = "🟢 Connected";
             break;
         case "minecraft_disconnected":
             statusMessage = "🔴 Minecraft Offline";
             break;
         case "server_disconnected":
-            statusMessage = "🔴 Server Offline"
+            statusMessage = "🔴 Server Offline";
             break;
         default:
-            statusMessage = "⚪ Unknown Status"
+            statusMessage = "⚪ Unknown Status";
     }
 
     return (
@@ -108,34 +107,38 @@ function App() {
                         >
                             {statusMessage}
                         </div>
-                        <div className="pointer-events-none flex-shrink min-w-fit text-right">
-                            {"📦 "}
-                            {state.itemStorage
-                                ? (state.itemStorage * 100).toFixed(2)
-                                : "-"}{" "}
-                            %
-                        </div>
-                        <div className="pointer-events-none flex-shrink min-w-fit text-right">
-                            {"💧 "}
-                            {state.fluidStorage
-                                ? (state.fluidStorage * 100).toFixed(2)
-                                : "-"}{" "}
-                            %
-                        </div>
-                        <div className="pointer-events-none flex-shrink min-w-fit text-right">
-                            {"🧪 "}
-                            {state.chemicalStorage
-                                ? (state.chemicalStorage * 100).toFixed(2)
-                                : "-"}{" "}
-                            %
-                        </div>
-                        <div className="pointer-events-none flex-shrink min-w-fit text-right">
-                            {"⚡ "}
-                            {state.energyStorage
-                                ? (state.energyStorage * 100).toFixed(2)
-                                : "-"}{" "}
-                            %
-                        </div>
+                        {state.itemStorage ? (
+                            <div className="pointer-events-none flex-shrink min-w-fit text-right">
+                                {"📦 "}
+                                {(state.itemStorage * 100).toFixed(2)} %
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+                        {state.fluidStorage ? (
+                            <div className="pointer-events-none flex-shrink min-w-fit text-right">
+                                {"💧 "}
+                                {(state.fluidStorage * 100).toFixed(2)} %
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+                        {state.chemicalStorage ? (
+                            <div className="pointer-events-none flex-shrink min-w-fit text-right">
+                                {"🧪 "}
+                                {(state.chemicalStorage * 100).toFixed(2)} %
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+                        {state.energyStorage ? (
+                            <div className="pointer-events-none flex-shrink min-w-fit text-right">
+                                {"⚡ "}
+                                {(state.energyStorage * 100).toFixed(2)} %
+                            </div>
+                        ) : (
+                            <></>
+                        )}
                         <div className="relative flex-grow">
                             <input
                                 type="text"
@@ -165,10 +168,10 @@ function App() {
                                     <ItemSquare
                                         onClick={() => setClickedItem(item)}
                                         setHoveredItem={(
-                                            item: Item | undefined,
+                                            item: Item["id"] | undefined,
                                             ref?: React.RefObject<HTMLDivElement>
                                         ) => {
-                                            setHoveredItemId(item?.id);
+                                            setHoveredItemId(item);
                                             setHoveredItemRef(ref);
                                         }}
                                         item={item}
@@ -253,7 +256,7 @@ function App() {
                                 <code>$fluid</code> – only fluids
                             </li>
                             <li>
-                                <code>$gas</code> – only gases
+                                <code>$chemical</code> – only chemicals
                             </li>
                             <li>
                                 <code>$craftable</code> – only craftable items

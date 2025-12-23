@@ -9,13 +9,13 @@ const matchesItem = (item: Item, term: string) => {
         return item.name.split(":")[0].toLowerCase().includes(term.slice(1));
     } else if (term.startsWith("$")) {
         if ("item".startsWith(term.slice(1))) {
-            return !item.isFluid && !item.isGas;
+            return !item.isFluid && !item.isChemical;
         }
         if ("fluid".startsWith(term.slice(1))) {
             return item.isFluid as boolean;
         }
-        if ("gas".startsWith(term.slice(1))) {
-            return item.isGas as boolean;
+        if ("chemical".startsWith(term.slice(1))) {
+            return item.isChemical as boolean;
         }
         if ("craftable".startsWith(term.slice(1))) {
             return item.isCraftable as boolean;
@@ -40,7 +40,7 @@ export const filterItems = (items: Item[], searchText: string) => {
         - basic text checks for displayName
         - # text checks for item.components content
         - @ text checks for mod (item.name.split(':')[0]) content
-        - $ text checks for item type (item.isFluid, item.isGas, item.isCraftable)
+        - $ text checks for item type (item.isFluid, item.isChemical, item.isCraftable)
         - > text checks for item count greater than defined
         - < text checks for item count smaller than defined
         - = text checks for item count equal to defined
