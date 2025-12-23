@@ -20,7 +20,7 @@ end
 
 local function parseItem(item)
     local components = nil
-    if (next(item.components)) then
+    if (item.components ~= nil and next(item.components)) then
         components = item.components
     end
 
@@ -37,7 +37,7 @@ end
 
 local function parseFluid(fluid)
     local components = nil
-    if (next(fluid.components)) then
+    if (fluid.components ~= nil and next(fluid.components)) then
         components = fluid.components
     end
 
