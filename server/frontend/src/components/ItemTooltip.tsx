@@ -40,6 +40,10 @@ export const ItemTooltip = (props: Props) => {
         setLeft(left);
     }, [props.itemRef.current]);
 
+    if (props.item == undefined) {
+        return <></>;
+    }
+
     const mod = props.item.name.split(":")[0].toLowerCase();
     const { delta5m, delta1h, delta24h} = calcCountChange(props.item);
     return ReactDOM.createPortal(
@@ -74,7 +78,7 @@ export const ItemTooltip = (props: Props) => {
                             </span>
                         )}
                         {": "}
-                        {delta5m?.toLocaleString()}
+                        {Math.round(delta5m).toLocaleString()}
                     </div>
                 ) : (
                     <></>
@@ -92,7 +96,7 @@ export const ItemTooltip = (props: Props) => {
                             </span>
                         )}
                         {": "}
-                        {delta1h.toLocaleString()}
+                        {Math.round(delta1h).toLocaleString()}
                     </div>
                 ) : (
                     <></>
@@ -110,7 +114,7 @@ export const ItemTooltip = (props: Props) => {
                             </span>
                         )}
                         {": "}
-                        {delta24h.toLocaleString()}
+                        {Math.round(delta24h).toLocaleString()}
                     </div>
                 ) : (
                     <></>

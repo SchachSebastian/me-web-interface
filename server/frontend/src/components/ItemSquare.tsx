@@ -43,14 +43,6 @@ const ItemSquare = (props: Props) => {
         }
     };
 
-    useEffect(() => {
-        return () => {
-            if (props.setHoveredItem) {
-                props.setHoveredItem(undefined);
-            }
-        };
-    }, []);
-
     const handleImageUnavailable = useFallbackImage
         ? undefined
         : () => setUseFallbackImage(true);

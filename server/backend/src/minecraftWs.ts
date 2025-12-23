@@ -43,21 +43,33 @@ let messageCallbacks: MessageCallback[] = [
                 console.error("Invalid inventory update data:", data);
                 return false;
             }
-            const validUpdates = data.filter((update) => {
-                const item = $items
-                    .get()
-                    .find(
-                        (item) => item.id === update.id
-                    );
-                if (
-                    (item && typia.is<MinecraftItemUpdate>(update)) ||
-                    typia.is<MinecraftItem>(update)
-                ) {
+            const seen = new Set<string>();
+            const validUpdates = data
+                .filter((update) => {
+                    const item = $items
+                        .get()
+                        .find((item) => item.id === update.id);
+                    if (
+                        (item && typia.is<MinecraftItemUpdate>(update)) ||
+                        typia.is<MinecraftItem>(update)
+                    ) {
+                        return true;
+                    }
+                    console.error("Invalid item update:", update);
+                    return false;
+                })
+                .filter((update) => {
+                    if (seen.has(update.id)) {
+                        console.error(
+                            "Duplicate item update for :",
+                            update.id,
+                            $items.get().find((item) => item.id === update.id)
+                        );
+                        return false;
+                    }
+                    seen.add(update.id);
                     return true;
-                }
-                console.error("Invalid item update:", update);
-                return false;
-            });
+                });
             console.log("Received updates: " + validUpdates.length);
             updateItemStorage(validUpdates);
             sendClientMessage({

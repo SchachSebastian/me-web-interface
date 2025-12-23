@@ -50,6 +50,12 @@ let messageCallbacks: MessageCallback[] = [
 
 export function handleClientWs(socket: WebSocket) {
     console.log("[Client WS] WebSocket connection established");
+    socket.send(
+        JSON.stringify({
+            type: "state-update",
+            data: $state.get(),
+        } as Message)
+    );
     chunkArray($items.get(), 100).forEach((chunk) => {
         socket.send(
             JSON.stringify({
@@ -58,12 +64,6 @@ export function handleClientWs(socket: WebSocket) {
             } as Message)
         );
     });
-    socket.send(
-        JSON.stringify({
-            type: "state-update",
-            data: $state.get(),
-        } as Message)
-    );
     sockets.push(socket);
     socket.on("message", (msg) => {
         try {
