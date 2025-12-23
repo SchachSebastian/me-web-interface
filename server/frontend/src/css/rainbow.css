@@ -1,0 +1,30 @@
+.rainbow-gradient {
+    animation: rainbow 3s linear infinite;
+}
+
+@keyframes rainbow {
+    0% {
+        color: #FF595E;
+    }
+    14% {
+        color: #FFCA3A;
+    }
+    28% {
+        color: #8AC926;
+    }
+    42% {
+        color: #1982C4;
+    }
+    57% {
+        color: #6A4C93;
+    }
+    71% {
+        color: #FF7B00;
+    }
+    85% {
+        color: #FF9AA2;
+    }
+    100% {
+        color: #FF595E;
+    }
+}

@@ -3,6 +3,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { calcCountChange } from "../util/calcCountChange";
 import { AdditionalItemInfo } from "./additionalItemInfo/AdditionalItemInfo";
+import { TooltipTitle } from "./tooltipTitle/TooltipTitle";
 
 type Props = {
     item: Item;
@@ -59,9 +60,7 @@ export const ItemTooltip = (props: Props) => {
             className="absolute"
         >
             <div className="bg-gray-900/90 backdrop-blur-sm p-4 rounded overflow-hidden border-4 border-[#250259]">
-                <div className="text-white text-xl font-bold">
-                    {props.item.displayName}
-                </div>
+                <TooltipTitle item={props.item} />
                 <div className="text-gray-300 font-mono text-sm">
                     Count: {props.item.count.toLocaleString()}
                 </div>

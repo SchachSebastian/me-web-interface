@@ -10,6 +10,12 @@ export const setMinecraftResponseNow = () => {
             ...$state.get(),
             status: previousStatus,
         });
+        sendClientMessage({
+            type: "state-update",
+            data: {
+                status: previousStatus,
+            },
+        });
     };
 };
 

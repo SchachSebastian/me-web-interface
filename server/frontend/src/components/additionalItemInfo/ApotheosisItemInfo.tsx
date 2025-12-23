@@ -21,5 +21,4 @@ export const ApotheosisItemInfo = (props: Props) => {
         );
     }
     return <></>;
-
 }
