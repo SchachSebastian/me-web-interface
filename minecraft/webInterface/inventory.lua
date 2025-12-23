@@ -72,36 +72,42 @@ local function getNewInventory()
     local items = bridge.getItems()
     local craftableItems = bridge.getCraftableItems()
     for _, craftableItem in ipairs(craftableItems) do
-        if craftableItem.count == 0 then
+        if craftableItem.count == 0 and craftableItem.fingerprint ~= nil then
             table.insert(items, parseItem(craftableItem))
         end
     end
 
     for _, item in ipairs(items) do
-        table.insert(inventory, parseItem(item))
+        if item.fingerprint ~= nil then
+            table.insert(inventory, parseItem(item))
+        end
     end
 
     local fluids = bridge.getFluids()
     local craftableFluids = bridge.getCraftableFluids()
     for _, craftableFluid in ipairs(craftableFluids) do
-        if craftableFluid.count == 0 then
+        if craftableFluid.count == 0 and craftableFluid.fingerprint ~= nil then
             table.insert(fluids, parseFluid(craftableFluid))
         end
     end
     for _, fluid in ipairs(fluids) do
-        table.insert(inventory, parseFluid(fluid))
+        if fluid.fingerprint ~= nil then
+            table.insert(inventory, parseFluid(fluid))
+        end
     end
 
     local chemicals = bridge.getChemicals()
     local craftableChemicals = bridge.getCraftableChemicals()
     for _, craftableChemical in ipairs(craftableChemicals) do
-        if craftableChemical.count == 0 then
+        if craftableChemical.count == 0 and craftableChemical.fingerprint ~= nil then
             table.insert(chemicals, parseChemical(craftableChemical))
         end
     end
 
     for _, chemical in ipairs(chemicals) do
-        table.insert(inventory, parseChemical(chemical))
+        if chemical.fingerprint ~= nil then
+            table.insert(inventory, parseChemical(chemical))
+        end
     end
 
     return inventory
