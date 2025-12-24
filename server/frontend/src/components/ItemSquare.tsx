@@ -1,15 +1,15 @@
-import { Item } from "diff-store/src/types/Item";
-import { useEffect, useRef, useState } from "react";
+import { $items, Item } from "diff-store";
+import { useMemo, useRef, useState } from "react";
 import { withErrorBoundary } from "react-error-boundary";
 import { formatCount } from "../util/formatCount";
-import { getItemImagePath } from "../util/getItemImagePath";
+import { getItemImagePath, MissingImage } from "../util/getItemImagePath";
 import { hasEnchantmentEffect } from "../util/hasEnchantmentEffect";
 
 interface Props {
     item: Item;
     onClick?: () => void;
     setHoveredItem?: (
-        item: Item | undefined,
+        item: Item["id"] | undefined,
         ref?: React.RefObject<HTMLDivElement>
     ) => void;
     style?: React.CSSProperties;
@@ -17,11 +17,29 @@ interface Props {
 const hoverDelay = 100; // milliseconds
 
 const ItemSquare = (props: Props) => {
+    if (props.item.count === -1) {
+        console.warn(
+            "Rendering item with count -1:",
+            $items.get().find((item) => item.id === props.item.id)
+        );
+    }
     const [useFallbackImage, setUseFallbackImage] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const handleClick = () => {
-        if (props.onClick && props.item.isCraftable && !props.item.isFluid) {
+    const handleClick = (event: React.MouseEvent) => {
+        if (event.shiftKey) {
+            const toCopy = {
+                displayName: props.item.displayName,
+                name: props.item.name,
+                count: props.item.count,
+                isCraftable: props.item.isCraftable,
+                isFluid: props.item.isFluid,
+                isChemical: props.item.isChemical,
+                components: props.item.components,
+                id: props.item.id,
+            };
+            navigator.clipboard.writeText(JSON.stringify(toCopy, null, 2));
+        } else if (props.onClick && props.item.isCraftable && !props.item.isFluid) {
             props.onClick();
         }
     };
@@ -29,7 +47,7 @@ const ItemSquare = (props: Props) => {
     const handlePointerEnter = () => {
         timeoutRef.current = setTimeout(() => {
             if (props.setHoveredItem) {
-                props.setHoveredItem(props.item, ref);
+                props.setHoveredItem(props.item.id, ref);
             }
         }, hoverDelay);
     };
@@ -40,19 +58,11 @@ const ItemSquare = (props: Props) => {
         }
     };
 
-    useEffect(() => {
-        return () => {
-            if (props.setHoveredItem) {
-                props.setHoveredItem(undefined);
-            }
-        };
-    }, []);
-
     const handleImageUnavailable = useFallbackImage
         ? undefined
         : () => setUseFallbackImage(true);
-    let imageSrc = getItemImagePath(props.item);
-    if (useFallbackImage) imageSrc = "/missingItem.webp";
+    let imageSrc = useMemo(() => getItemImagePath(props.item), [props.item]);
+    if (useFallbackImage) imageSrc = MissingImage;
     return (
         <div
             style={{
@@ -64,7 +74,7 @@ const ItemSquare = (props: Props) => {
             onPointerLeave={handlePointerLeave}
             ref={ref}
         >
-            <div className="relative cursor-pointer bg-[#8b8b8b] aspect-square p-1 overflow-hidden">
+            <div className="relative select-none cursor-pointer bg-[#8b8b8b] aspect-square p-1 overflow-hidden">
                 <div className="absolute bottom-1 right-2 z-10 text-white font-bold text-2xl">
                     {formatCount(props.item)}
                 </div>

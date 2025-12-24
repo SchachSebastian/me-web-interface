@@ -1,51 +1,47 @@
-FROM node:20-alpine AS fbuilder
+FROM node:24.6-slim AS diffstore
+
+WORKDIR /server/shared/diff-store
+COPY server/shared/diff-store/. ./
+RUN npm install
+RUN npm run build
+
+FROM node:24.6-slim AS frontend
 
 WORKDIR /server
-COPY server/package*.json ./
-COPY server/frontend/package*.json frontend/.
-COPY server/shared/diff-store/. shared/diff-store/.
+COPY server/. ./
+COPY --from=diffstore /server/shared/diff-store/dist ./shared/diff-store/dist
+COPY --from=diffstore /server/shared/diff-store/package.json ./shared/diff-store/package.json
 RUN npm install
-
-COPY server/frontend/src/. frontend/src/.
-COPY server/frontend/public/. frontend/public/.
-COPY server/frontend/index.html frontend/.
-COPY server/frontend/vite.config.ts frontend/.
-COPY server/frontend/tailwind.config.js frontend/.
-COPY server/frontend/postcss.config.js frontend/.
 
 WORKDIR /server/frontend
 RUN npm run build
 
-FROM node:20-alpine AS bbuilder
+FROM node:24.6-slim AS backend
 
 WORKDIR /server
-COPY server/package*.json ./
-COPY server/backend/package*.json backend/.
-COPY server/backend/tsconfig.json backend/.
-COPY server/shared/diff-store/. shared/diff-store/.
-COPY server/backend/src/. backend/src/.
+COPY server/. ./
+COPY --from=diffstore /server/shared/diff-store/dist ./shared/diff-store/dist
+COPY --from=diffstore /server/shared/diff-store/package.json ./shared/diff-store/package.json
 
 RUN npm install
-
-WORKDIR /server/shared/diff-store
-RUN npm run build
 
 WORKDIR /server/backend
 RUN npm install
 RUN npm run build
 
-FROM node:20-alpine
+FROM gcr.io/distroless/nodejs24-debian12 AS runtime
 
 WORKDIR /server/backend
-COPY --from=fbuilder /server/frontend/dist/. ./public/.
-COPY --from=bbuilder /server/backend/dist/. ./dist/.
-COPY --from=bbuilder /server/backend/package.json ./
+COPY --from=frontend /server/frontend/dist/. ./public/.
+COPY --from=backend /server/backend/dist/. ./dist/.
+COPY --from=backend /server/backend/package.json ./
 
 WORKDIR /server
-COPY --from=bbuilder /server/shared/diff-store/dist/. ./shared/diff-store/src/.
-COPY --from=bbuilder /server/package*.json ./
-
-RUN npm install
+COPY --from=backend /server/shared/diff-store/dist/. ./shared/diff-store/dist/.
+COPY --from=backend /server/package*.json ./
+COPY --from=backend /server/node_modules ./node_modules
+COPY --from=diffstore /server/shared/diff-store/dist ./shared/diff-store/dist
+COPY --from=diffstore /server/shared/diff-store/package.json ./shared/diff-store/package.json
 
 WORKDIR /server/backend
 
@@ -55,4 +51,4 @@ ENV CRAFTING_SECRET=crafting
 
 EXPOSE 80
 
-CMD ["node", "dist/index.js"]
+CMD ["dist/index.js"]

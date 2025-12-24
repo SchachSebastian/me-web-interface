@@ -1,5 +1,5 @@
 import { atom } from "nanostores";
-import { Item, ItemUpdate } from "../types/Item";
+import { Item, ItemUpdate } from "../types/Item.js";
 
 export const $items = atom<Item[]>([]);
 
@@ -23,8 +23,9 @@ export const updateItemStorage = (updates: ItemUpdate[]) => {
     updates
         .filter(
             (update) =>
-                $items.get().find((item) => update.id === item.id) === undefined
+                new_items.find((item) => update.id === item.id) === undefined
         )
+        .filter((item) => item.count !== -1)
         .forEach((item) => {
             new_items.push(item as Item);
         });

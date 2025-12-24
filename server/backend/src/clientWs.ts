@@ -1,7 +1,7 @@
-import { $items } from "diff-store/src/storage/items";
-import { $storage } from "diff-store/src/storage/storage";
-import { Message } from "diff-store/src/types/Message";
-import { MessageCallback } from "diff-store/src/types/MessageCallback";
+import { MessageCallback } from 'diff-store';
+import { $items } from "diff-store";
+import { $state } from "diff-store";
+import { Message } from "diff-store";
 import dotenv from "dotenv";
 import typia from "typia";
 import WebSocket from "ws";
@@ -19,7 +19,7 @@ const removeSocket = (socket: WebSocket) => {
 };
 
 type CraftingRequest = {
-    fingerprint: string;
+    id: string;
     count: number;
     secret: string;
 };
@@ -40,7 +40,7 @@ let messageCallbacks: MessageCallback[] = [
             sendMinecraftMessage({
                 type: "crafting-request",
                 data: {
-                    fingerprint: data.fingerprint,
+                    id: data.id,
                     count: data.count,
                 },
             });
@@ -50,6 +50,12 @@ let messageCallbacks: MessageCallback[] = [
 
 export function handleClientWs(socket: WebSocket) {
     console.log("[Client WS] WebSocket connection established");
+    socket.send(
+        JSON.stringify({
+            type: "state-update",
+            data: $state.get(),
+        } as Message)
+    );
     chunkArray($items.get(), 100).forEach((chunk) => {
         socket.send(
             JSON.stringify({
@@ -58,12 +64,6 @@ export function handleClientWs(socket: WebSocket) {
             } as Message)
         );
     });
-    socket.send(
-        JSON.stringify({
-            type: "storage-update",
-            data: $storage.get(),
-        } as Message)
-    );
     sockets.push(socket);
     socket.on("message", (msg) => {
         try {

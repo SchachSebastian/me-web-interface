@@ -1,20 +1,24 @@
-import { $items, updateItemStorage } from 'diff-store/src/storage/items';
-import { $storage } from "diff-store/src/storage/storage";
-import { Item } from "diff-store/src/types/Item";
-import { Message } from "diff-store/src/types/Message";
-import { MessageCallback } from "diff-store/src/types/MessageCallback";
-import { Storage } from "diff-store/src/types/Storage";
+import {
+    $items,
+    $state,
+    defaultState,
+    Message,
+    MessageCallback,
+    State,
+    updateItemStorage,
+} from "diff-store";
 import dotenv from "dotenv";
 import http from "http";
-import typia from 'typia';
+import typia from "typia";
 import WebSocket, { Data } from "ws";
 import { sendClientMessage } from "./clientWs";
-import { MinecraftItem, MinecraftItemUpdate } from './types/MinecraftItem';
+import { setMinecraftResponseNow } from "./service/serverState";
+import { MinecraftItem, MinecraftItemUpdate } from "./types/MinecraftItem";
 
 dotenv.config();
 
 type CraftingResponse = {
-    fingerprint: string;
+    id: string;
     count: number;
     success: boolean;
 };
@@ -26,6 +30,7 @@ let messageCallbacks: MessageCallback[] = [
         callback: () => {
             console.log("Received INIT message");
             $items.set([]);
+            $state.set(defaultState);
             sendClientMessage({
                 type: "reset",
             });
@@ -38,14 +43,33 @@ let messageCallbacks: MessageCallback[] = [
                 console.error("Invalid inventory update data:", data);
                 return false;
             }
-            const validUpdates = data.filter((update) => {
-                const item = $items.get().find((item) => item.id === update.id);
-                if (!item && !typia.is<MinecraftItem>(update)) {
+            const seen = new Set<string>();
+            const validUpdates = data
+                .filter((update) => {
+                    const item = $items
+                        .get()
+                        .find((item) => item.id === update.id);
+                    if (
+                        (item && typia.is<MinecraftItemUpdate>(update)) ||
+                        typia.is<MinecraftItem>(update)
+                    ) {
+                        return true;
+                    }
                     console.error("Invalid item update:", update);
                     return false;
-                }
-                return true;
-            });
+                })
+                .filter((update) => {
+                    if (seen.has(update.id)) {
+                        console.error(
+                            "Duplicate item update for :",
+                            update.id,
+                            $items.get().find((item) => item.id === update.id)
+                        );
+                        return false;
+                    }
+                    seen.add(update.id);
+                    return true;
+                });
             console.log("Received updates: " + validUpdates.length);
             updateItemStorage(validUpdates);
             sendClientMessage({
@@ -69,16 +93,19 @@ let messageCallbacks: MessageCallback[] = [
         },
     },
     {
-        type: "storage-update",
+        type: "state-update",
         callback: (data: any) => {
-            if (!typia.equals<Storage>(data)) {
-                console.error("Invalid storage data:", data);
+            if (!typia.equals<Partial<State>>(data)) {
+                console.error("Invalid state data:", data);
                 return false;
             }
-            $storage.set(data);
-            console.log("Received Storage Update message");
+            $state.set({
+                ...$state.get(),
+                ...data,
+            });
+            console.log("Received State Update message");
             sendClientMessage({
-                type: "storage-update",
+                type: "state-update",
                 data: data,
             });
         },
@@ -96,7 +123,7 @@ export function handleMinecraftWs(
         return;
     }
     console.log("[Minecraft WS] WebSocket connection established");
-    if (minecraftSocket) { 
+    if (minecraftSocket) {
         console.log("[Minecraft WS] Closing existing socket");
         minecraftSocket.close(1000);
     }
@@ -110,6 +137,7 @@ export function handleMinecraftWs(
                 socket.close(1008);
                 return;
             }
+            setMinecraftResponseNow();
             messageCallbacks
                 .filter((c) => c.type === received.type)
                 .forEach((c) => {

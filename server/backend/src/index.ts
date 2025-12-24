@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import { WebSocketServer } from "ws";
 import { handleMinecraftWs } from "./minecraftWs";
 import updateCountHistoryInterval from "./service/countHistory";
+import updateServerStateInterval from "./service/serverState";
 
 dotenv.config();
 
@@ -14,7 +15,20 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT) : 80;
 const app = createHttpServer();
 const server = http.createServer(app);
 
-const ws = new WebSocketServer({ server });
+const ws = new WebSocketServer({
+    server,
+    perMessageDeflate: {
+        zlibDeflateOptions: {
+            level: 6,
+        },
+        zlibInflateOptions: {
+            chunkSize: 10 * 1024,
+        },
+        clientNoContextTakeover: true,
+        serverNoContextTakeover: true,
+        threshold: 512,
+    },
+});
 ws.on("connection", (socket, req) => {
     console.log("Incoming Websocket Connection");
     if (req.url === "/api") {
@@ -27,6 +41,7 @@ ws.on("connection", (socket, req) => {
 });
 
 updateCountHistoryInterval();
+updateServerStateInterval();
 
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on port ${PORT}`);

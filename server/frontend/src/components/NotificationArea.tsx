@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react";
-import { $items } from "diff-store/src/storage/items";
+import { $items } from "diff-store";
 import ReactDOM from "react-dom";
 import { useCraftingResponses } from "../requests/useCraftingResponses";
 export const NotificationArea = () => {
@@ -9,10 +9,8 @@ export const NotificationArea = () => {
     const firstResponse = craftingResponses[craftingResponses.length - 1];
     if (!firstResponse) return <></>;
 
-    const item = items.find(
-        (item) => item.fingerprint === firstResponse.fingerprint
-    );
-    const name = item?.displayName ?? firstResponse.fingerprint;
+    const item = items.find((item) => item.id === firstResponse.id);
+    const name = item?.displayName ?? (firstResponse.id as string);
 
     const isSuccess = firstResponse.success;
 

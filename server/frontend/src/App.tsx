@@ -1,5 +1,4 @@
-import { $items } from "diff-store/src/storage/items";
-import { Item } from "diff-store/src/types/Item";
+import { $items, Item } from "diff-store";
 import { useRef, useState } from "react";
 import { VirtuosoGrid } from "react-virtuoso";
 import Dialog from "./components/Dialog";
@@ -11,7 +10,7 @@ import { useLocalStorage } from "./hooks/useLocalStorage";
 import { useQueryParam } from "./hooks/useQueryParam";
 import useVirtuosoComponents from "./hooks/useVirtuosoComponents";
 import { useMeItems } from "./requests/useMeItems";
-import { useMeStorage } from "./requests/useMeStorage";
+import { useNetworkState } from "./requests/useNetworkState";
 import { useResetMessage } from "./requests/useResetMessage";
 import { filterItems } from "./util/filterItems";
 import { useWebSocket } from "./WebsocketProvider";
@@ -19,7 +18,7 @@ import { useWebSocket } from "./WebsocketProvider";
 function App() {
     const [searchText, setSearchText] = useQueryParam("search", "");
     const [clickedItem, setClickedItem] = useState<Item>();
-    const [hoveredItem, setHoveredItem] = useState<Item>();
+    const [hoveredItemId, setHoveredItemId] = useState<Item["id"]>();
     const [hoveredItemRef, setHoveredItemRef] =
         useState<React.RefObject<HTMLDivElement>>();
     const [openHelp, setOpenHelp] = useState(false);
@@ -29,7 +28,7 @@ function App() {
     const socket = useWebSocket();
 
     const items = useMeItems();
-    const storage = useMeStorage();
+    const state = useNetworkState();
 
     useResetMessage(() => $items.set([]));
 
@@ -56,7 +55,7 @@ function App() {
                 JSON.stringify({
                     type: "crafting-request",
                     data: {
-                        fingerprint: clickedItem.fingerprint,
+                        id: clickedItem.id,
                         count: value,
                         secret: secret,
                     },
@@ -66,8 +65,29 @@ function App() {
         setClickedItem(undefined);
     };
 
-    const itemPercentage = (storage.item.used / storage.item.total) * 100;
-    const fluidPercentage = (storage.fluid.used / storage.fluid.total) * 100;
+    let statusMessage;
+    switch (state.status) {
+        case "bridge_missing":
+            statusMessage = "🔴 Bridge Missing";
+            break;
+        case "network_disconnected":
+            statusMessage = "🔴 Network Disconnected";
+            break;
+        case "network_offline":
+            statusMessage = "🟠 Network Offline";
+            break;
+        case "network_connected":
+            statusMessage = "🟢 Connected";
+            break;
+        case "minecraft_disconnected":
+            statusMessage = "🔴 Minecraft Offline";
+            break;
+        case "server_disconnected":
+            statusMessage = "🔴 Server Offline";
+            break;
+        default:
+            statusMessage = "⚪ Unknown Status";
+    }
 
     return (
         <>
@@ -80,20 +100,45 @@ function App() {
                         >
                             Terminal
                         </div>
-                        <div className="pointer-events-none basis-4/12 min-w-fit flex-grow flex-shrink text-right">
-                            {"📦 "}
-                            {!Number.isNaN(itemPercentage)
-                                ? itemPercentage.toFixed(2)
-                                : "-"}{" "}
-                            %
+
+                        <div
+                            title="test"
+                            className="pointer-events-none basis-4/12 min-w-fit flex-grow flex-shrink text-right"
+                        >
+                            {statusMessage}
                         </div>
-                        <div className="pointer-events-none flex-shrink min-w-fit text-right">
-                            {"💧 "}
-                            {!Number.isNaN(fluidPercentage)
-                                ? fluidPercentage.toFixed(2)
-                                : "-"}{" "}
-                            %
-                        </div>
+                        {state.itemStorage ? (
+                            <div className="pointer-events-none flex-shrink min-w-fit text-right">
+                                {"📦 "}
+                                {(state.itemStorage * 100).toFixed(2)} %
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+                        {state.fluidStorage ? (
+                            <div className="pointer-events-none flex-shrink min-w-fit text-right">
+                                {"💧 "}
+                                {(state.fluidStorage * 100).toFixed(2)} %
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+                        {state.chemicalStorage ? (
+                            <div className="pointer-events-none flex-shrink min-w-fit text-right">
+                                {"🧪 "}
+                                {(state.chemicalStorage * 100).toFixed(2)} %
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+                        {state.energyStorage ? (
+                            <div className="pointer-events-none flex-shrink min-w-fit text-right">
+                                {"⚡ "}
+                                {(state.energyStorage * 100).toFixed(2)} %
+                            </div>
+                        ) : (
+                            <></>
+                        )}
                         <div className="relative flex-grow">
                             <input
                                 type="text"
@@ -123,10 +168,10 @@ function App() {
                                     <ItemSquare
                                         onClick={() => setClickedItem(item)}
                                         setHoveredItem={(
-                                            item: Item | undefined,
+                                            item: Item["id"] | undefined,
                                             ref?: React.RefObject<HTMLDivElement>
                                         ) => {
-                                            setHoveredItem(item);
+                                            setHoveredItemId(item);
                                             setHoveredItemRef(ref);
                                         }}
                                         item={item}
@@ -211,7 +256,7 @@ function App() {
                                 <code>$fluid</code> – only fluids
                             </li>
                             <li>
-                                <code>$gas</code> – only gases
+                                <code>$chemical</code> – only chemicals
                             </li>
                             <li>
                                 <code>$craftable</code> – only craftable items
@@ -246,9 +291,9 @@ function App() {
                     </div>
                 </div>
             </Dialog>
-            {hoveredItem && hoveredItemRef ? (
+            {hoveredItemId && hoveredItemRef ? (
                 <ItemTooltip
-                    item={hoveredItem}
+                    item={filteredItems.find((i) => i.id === hoveredItemId)!}
                     itemRef={hoveredItemRef}
                     containerRef={ref}
                 />

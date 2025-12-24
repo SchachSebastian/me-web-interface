@@ -1,8 +1,9 @@
-import { Item } from "diff-store/src/types/Item";
+import { Item } from "diff-store";
 import { useLayoutEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { calcCountChange } from "../util/calcCountChange";
 import { AdditionalItemInfo } from "./additionalItemInfo/AdditionalItemInfo";
+import { TooltipTitle } from "./tooltipTitle/TooltipTitle";
 
 type Props = {
     item: Item;
@@ -40,6 +41,10 @@ export const ItemTooltip = (props: Props) => {
         setLeft(left);
     }, [props.itemRef.current]);
 
+    if (props.item == undefined) {
+        return <></>;
+    }
+
     const mod = props.item.name.split(":")[0].toLowerCase();
     const { delta5m, delta1h, delta24h} = calcCountChange(props.item);
     return ReactDOM.createPortal(
@@ -55,9 +60,7 @@ export const ItemTooltip = (props: Props) => {
             className="absolute"
         >
             <div className="bg-gray-900/90 backdrop-blur-sm p-4 rounded overflow-hidden border-4 border-[#250259]">
-                <div className="text-white text-xl font-bold">
-                    {props.item.displayName}
-                </div>
+                <TooltipTitle item={props.item} />
                 <div className="text-gray-300 font-mono text-sm">
                     Count: {props.item.count.toLocaleString()}
                 </div>
@@ -74,7 +77,7 @@ export const ItemTooltip = (props: Props) => {
                             </span>
                         )}
                         {": "}
-                        {delta5m?.toLocaleString()}
+                        {Math.round(delta5m).toLocaleString()}
                     </div>
                 ) : (
                     <></>
@@ -92,7 +95,7 @@ export const ItemTooltip = (props: Props) => {
                             </span>
                         )}
                         {": "}
-                        {delta1h.toLocaleString()}
+                        {Math.round(delta1h).toLocaleString()}
                     </div>
                 ) : (
                     <></>
@@ -110,7 +113,7 @@ export const ItemTooltip = (props: Props) => {
                             </span>
                         )}
                         {": "}
-                        {delta24h.toLocaleString()}
+                        {Math.round(delta24h).toLocaleString()}
                     </div>
                 ) : (
                     <></>
@@ -118,13 +121,10 @@ export const ItemTooltip = (props: Props) => {
                 <div className="text-gray-400 font-mono text-sm mb-1">
                     {props.item.name}
                 </div>
-                {/* <div className="text-gray-400 font-mono text-sm mb-1">
-                            {JSON.stringify(props.item.components, null, 2)}
-                        </div>  */}
                 <AdditionalItemInfo item={props.item} />
                 <div className="text-blue-400 text-lg italic">{mod}</div>
                 <div className="text-gray-400 font-mono text-xs">
-                    {props.item.fingerprint}
+                    {props.item.id}
                 </div>
             </div>
         </div>,

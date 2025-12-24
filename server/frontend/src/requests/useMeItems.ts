@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/react";
-import { FIVE_MINUTES, updateCountHistory } from "diff-store/src/storage/countHistory";
-import { $items, updateItemStorage } from "diff-store/src/storage/items";
-import { Item } from "diff-store/src/types/Item";
+import { $items, FIVE_MINUTES, updateCountHistory } from "diff-store";
+import { updateItemStorage } from "diff-store";
+import { Item } from "diff-store";
 import useSubscribe from "./useSubsribe";
 
 export const useMeItems = () => {

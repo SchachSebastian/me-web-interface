@@ -1,5 +1,4 @@
-import { Item } from "diff-store/src/types/Item";
-import { ReactNode } from "react";
+import { Item } from "diff-store";
 
 type Props = {
     item: Item;

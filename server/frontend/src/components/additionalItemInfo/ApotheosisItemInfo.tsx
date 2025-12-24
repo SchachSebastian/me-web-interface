@@ -1,5 +1,4 @@
-import { Item } from "diff-store/src/types/Item";
-import { ReactNode } from "react";
+import { Item } from "diff-store";
 
 type Props = {
     item: Item;
@@ -22,5 +21,4 @@ export const ApotheosisItemInfo = (props: Props) => {
         );
     }
     return <></>;
-
 }

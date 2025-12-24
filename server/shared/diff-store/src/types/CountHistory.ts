@@ -1,5 +1,5 @@
-import CountHistoryElement from "./CountHistoryElement";
-import { Item } from "./Item"
+import CountHistoryElement from "./CountHistoryElement.js";
+import { Item } from "./Item.js";
 
 export type CountHistory = {
     id: Item["id"];

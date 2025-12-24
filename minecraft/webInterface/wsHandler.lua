@@ -1,16 +1,16 @@
-local getMeInventory = require("getMeInventory")
-local getMeInventoryDiff = getMeInventory.getMeInventoryDiff
-local resetStorage = getMeInventory.resetStorage
+local inventory = require("inventory")
+local getInventoryDiff = inventory.getInventoryDiff
+local resetStorage = inventory.resetStorage
 
 local craftingHandler = require("craftingHandler")
 local handleCraftingRequest = craftingHandler.handleCraftingRequest
 
-local getMeStorage = require("getMeStorage")
-
-print("Started")
+local state = require("state")
+local getState = state.getState
+local resetStateStorage = state.resetStorage
 
 local config = require("config")
-local url = config.url
+local url = config.url .. "/mc"
 local maxItemsPerMessage = config.maxItemsPerMessage
 local headers = {}
 headers["Secret"] = config.secret
@@ -18,6 +18,7 @@ headers["Secret"] = config.secret
 local ws
 
 local function sendList(list, type)
+    print("Sending " .. type .. " message with " .. #list .. " items")
     for i = 1, #list, maxItemsPerMessage do
         local chunk = {}
         for j = i, math.min(i + maxItemsPerMessage - 1, #list) do
@@ -42,19 +43,19 @@ local function handleMessages()
             local type = decodedMessage.type
             local data = decodedMessage.data
             if type == "crafting-request" then
-                local fingerprint = data.fingerprint
+                local id = data.id
                 local count = data.count or 1
-                local success, err = handleCraftingRequest(fingerprint, count)
+                local success, err = handleCraftingRequest(id, count)
                 if not success then
                     print("Crafting error:", err)
                 else
-                    print("Crafting success:", fingerprint, count)
+                    print("Crafting success:", id, count)
                 end
                 ws.send(textutils.serialiseJSON({
                     type = "crafting-response",
                     data = {
                         success = success,
-                        fingerprint = fingerprint,
+                        id = id,
                         count = count
                     }
                 }))
@@ -65,18 +66,19 @@ end
 
 local function sendInventory()
     while true do
-        local inventory = getMeInventoryDiff()
+        sleep(0.1)
+        local inventory = getInventoryDiff()
         sendList(inventory, "inventory-update")
     end
 end
 
-local function sendStorage()
+local function sendState()
     while true do
-        sleep(0.1)
-        local data = getMeStorage()
+        sleep(1)
+        local data = getState()
         if data then
             ws.send(textutils.serialiseJSON({
-                type = "storage-update",
+                type = "state-update",
                 data = data
             }))
 
@@ -98,19 +100,19 @@ end
 local initMessage = textutils.serialiseJSON({
     type = "init"
 })
+
 local function wsHandler()
     if ws then
         ws.close()
     end
     ws = http.websocket(url, headers)
+    if (not ws) then
+        error("Failed to connect to WebSocket at " .. url)
+    end
     ws.send(initMessage)
     resetStorage()
-    parallel.waitForAll(sendInventory, handleMessages, sendStorage, ping)
+    resetStateStorage()
+    parallel.waitForAll(sendState, sendInventory, handleMessages, ping)
 end
 
--- Startup delay
-sleep(5)
-
-while true do
-    pcall(wsHandler)
-end
+return wsHandler

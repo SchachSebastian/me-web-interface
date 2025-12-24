@@ -5,7 +5,7 @@ This is a fun side project that brings high-tech flair to my Minecraft world. I 
 
 ## 🚀 What It Does
 
-This project connects a Minecraft ComputerCraft computer to a web-based React interface via a Node.js server, allowing you to:
+This project connects a Minecraft CC Tweaked computer to a web-based React interface via a Node.js server, allowing you to:
 
 - 📦 View all items stored in your **Applied Energistics 2 ME system**
 - 🧠 Interface using a **Lua script with Advanced Peripherals’ ME Bridge**
@@ -80,7 +80,7 @@ Once it’s up and running, open your browser and go to your server’s **public
 
 ### 🖥️ 4. Install the Lua Script In-Game
 
-On your ComputerCraft computer, run:
+On your CC Tweaked computer, run:
 
 ```lua
 wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/install.lua
@@ -109,4 +109,4 @@ return config
 - **Frontend:** React
 - **Backend:** Node.js with Express
 - **Communication:** WebSocket
-- **Minecraft Mods:** Applied Energistics 2, ComputerCraft, Advanced Peripherals
+- **Minecraft Mods:** Applied Energistics 2, CC Tweaked, Advanced Peripherals

@@ -1,6 +1,10 @@
-@tailwind base;
-@tailwind components;
+@import "tailwindcss";
 @tailwind utilities;
+
+
+@theme {
+    --background-image-minecraft-bg: url('/minecraftBg.webp');
+}
 
 @keyframes dropDown {
     from {
