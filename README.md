@@ -23,7 +23,7 @@ If you’re using the **ATM 10 modpack**, you can skip the setup steps and use t
 Run the following command:
 
 ```bash
-docker run -e SECRET=yourSecretHere -e CRAFTING_SECRET=yourCraftingSecretHere -p 80:80 schachsebastian/me-web-interface:atm10
+docker run -e SECRET=yourSecretHere -e CRAFTING_SECRET=yourCraftingSecretHere -p 80:80 schachsebastian/me-web-interface:atm10-oldApBridge
 ```
 
 - The server will run on **port 80**.
@@ -83,7 +83,7 @@ Once it’s up and running, open your browser and go to your server’s **public
 On your ComputerCraft computer, run:
 
 ```lua
-wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/install.lua
+wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/oldApBridge/minecraft/install.lua
 ```
 
 Then execute `install.lua` to install the full script.

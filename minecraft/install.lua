@@ -1,21 +1,21 @@
 shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/wsHandler.lua",
+    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/oldApBridge/minecraft/meWebInterface/wsHandler.lua",
     "meWebInterface/wsHandler.lua")
 shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/craftingHandler.lua",
+    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/oldApBridge/minecraft/meWebInterface/craftingHandler.lua",
     "meWebInterface/craftingHandler.lua")
 shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/getMeInventory.lua",
+    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/oldApBridge/minecraft/meWebInterface/getMeInventory.lua",
     "meWebInterface/getMeInventory.lua")
 shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/getMeStorage.lua",
+    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/oldApBridge/minecraft/meWebInterface/getMeStorage.lua",
     "meWebInterface/getMeStorage.lua")
 shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/util.lua",
+    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/oldApBridge/minecraft/meWebInterface/util.lua",
     "meWebInterface/util.lua")
 shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/meWebInterface/config.lua",
+    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/oldApBridge/minecraft/meWebInterface/config.lua",
     "meWebInterface/config.lua")
 
 shell.run(
-    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/main/minecraft/startup.lua")
+    "wget https://raw.githubusercontent.com/SchachSebastian/me-web-interface/refs/heads/oldApBridge/minecraft/startup.lua")
