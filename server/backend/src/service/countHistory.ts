@@ -13,6 +13,10 @@ import chunkArray from "../util/chunkArray";
 
 const updateCountHistoryInterval = () =>
     setInterval(() => {
+        if ($items.get().length === 0) {
+            console.log("Skipping countHistory update: no items available");
+            return;
+        }
         console.log("Updating countHistory");
         const timestamp = Date.now();
         const updates: CountHistoryUpdate[] = [];
