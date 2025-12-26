@@ -22,6 +22,9 @@ while true do
         break
     end
     print("Error: " .. error)
+    local file = fs.open("error.log", "w")
+    file.write(error)
+    file.close()
     print("Reconnecting in 1 second...")
     sleep(1)
 end
