@@ -35,7 +35,6 @@ def convert_png_to_webp_and_delete(root_dir: Path, workers: int | None = None):
         print("No PNGs found.")
         return
 
-    # Default: sinnvoller Wert (nicht blind 100 Threads)
     max_workers = workers or min(32, (os.cpu_count() or 4) * 2)
     print(f"Using {max_workers} workers")
 

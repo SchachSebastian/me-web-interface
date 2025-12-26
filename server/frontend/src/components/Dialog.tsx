@@ -1,5 +1,6 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import ReactDOM from "react-dom";
+import { useEscapeEffect } from "../hooks/useEscapeEffect";
 
 interface DialogProps {
     isOpen: boolean;
@@ -8,7 +9,14 @@ interface DialogProps {
     children?: ReactNode;
 }
 
-const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, title, children }) => {
+const Dialog: React.FC<DialogProps> = ({
+    isOpen,
+    onClose,
+    title,
+    children,
+}) => {
+    useEscapeEffect(onClose);
+
     if (!isOpen) return null;
 
     const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -29,8 +37,11 @@ const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, title, children }) => 
                         {title || "Dialog"}
                     </h2>
                 </div>
-                {/* Content */}
-                <div className="flex-1 overflow-y-auto">{children}</div>
+                <div
+                    className="flex-1 overflow-y-auto pr-4"
+                >
+                    {children}
+                </div>
             </div>
         </div>,
         document.body
