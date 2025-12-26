@@ -15,10 +15,9 @@ export const usePath = (defaultValue?: string) => {
     }, [defaultValue]);
 
     const setFullPath = (newPath: string) => {
-        if (newPath !== path) {
-            window.history.pushState({}, "", newPath);
-            setPath(newPath);
-        }
+        window.history.pushState({}, "", newPath);
+        window.dispatchEvent(new Event("popstate"));
+        setPath(newPath);
     };
 
     return [path, setFullPath] as [string, (newPath: string) => void];

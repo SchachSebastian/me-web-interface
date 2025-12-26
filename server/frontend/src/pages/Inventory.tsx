@@ -1,20 +1,20 @@
 import { $items, Item } from "diff-store";
 import { useRef, useState } from "react";
 import { VirtuosoGrid } from "react-virtuoso";
-import { useWebSocket } from "./WebsocketProvider";
-import Dialog from "./components/Dialog";
-import HelpDialog from "./components/HelpDialog";
-import ItemSquare from "./components/ItemSquare";
-import { ItemTooltip } from "./components/ItemTooltip";
-import NumberInput from "./components/NumberInput";
-import { useLocalStorage } from "./hooks/useLocalStorage";
-import { useQueryParam } from "./hooks/useQueryParam";
-import useVirtuosoComponents from "./hooks/useVirtuosoComponents";
-import { useMeItems } from "./requests/useMeItems";
-import { useNetworkState } from "./requests/useNetworkState";
-import { useResetMessage } from "./requests/useResetMessage";
-import { filterItems } from "./util/filterItems";
-import { useEscapeEffect } from "./hooks/useEscapeEffect";
+import { useWebSocket } from "../WebsocketProvider";
+import Dialog from "../components/Dialog";
+import HelpDialog from "../components/HelpDialog";
+import ItemSquare from "../components/ItemSquare";
+import { ItemTooltip } from "../components/ItemTooltip";
+import NumberInput from "../components/NumberInput";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useQueryParam } from "../hooks/useQueryParam";
+import useVirtuosoComponents from "../hooks/useVirtuosoComponents";
+import { useMeItems } from "../requests/useMeItems";
+import { useNetworkState } from "../requests/useNetworkState";
+import { useResetMessage } from "../requests/useResetMessage";
+import { filterItems } from "../util/filterItems";
+import { useEscapeEffect } from "../hooks/useEscapeEffect";
 
 export const Inventory = () => {
     const [searchText, setSearchText] = useQueryParam("search", "");

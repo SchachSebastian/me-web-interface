@@ -1,7 +1,7 @@
 import { NotificationArea } from "./components/NotificationArea";
 import { StatusBadge } from "./components/StatusBadge";
 import { usePath } from "./hooks/usePath";
-import { Inventory } from "./Inventory";
+import { Inventory } from "./pages/Inventory";
 
 function App() {
     const [openPage, setOpenPage] = usePath();
