@@ -1,4 +1,4 @@
-# ME Web Interface
+# Minecraft Storage Web Interface
 
 **Because vanilla Minecraft is too basic.**  
 This is a fun side project that brings high-tech flair to my Minecraft world. I wanted a smoother way to interact with my Applied Energistics 2 ME storage system—so I built a custom web interface to view everything I’ve hoarded in style.
@@ -7,10 +7,10 @@ This is a fun side project that brings high-tech flair to my Minecraft world. I 
 
 This project connects a Minecraft CC Tweaked computer to a web-based React interface via a Node.js server, allowing you to:
 
-- 📦 View all items stored in your **Applied Energistics 2 ME system**
-- 🧠 Interface using a **Lua script with Advanced Peripherals’ ME Bridge**
+- 📦 View all items stored in your **Applied Energistics 2 ME system or RS system**
+- 🧠 Interface using a **Lua script with Advanced Peripherals’ ME Bridge or RS Bridge**
 - 🌐 Browse your inventory from a sleek **React frontend**
-- 🛠️ Even **remotely craft items** directly from the web interface — just click and let the ME system handle the rest!
+- 🛠️ Even **remotely craft items** directly from the web interface — just click and let the ME/RS system handle the rest!
 
 ---
 
@@ -46,16 +46,11 @@ This will install the necessary dependencies for the image extraction script.
 
 Before building the server, you’ll need to extract item icons from the modpack you're using.
 
-Run:
+You can achieve this by using a mod I created [item-image-export](https://github.com/SchachSebastian/item-image-export).
 
-```bash
-py scripts/extractImages.py
-```
+Once exported, copy the png images into the `public/assets` directory of the frontend.
 
-- This script will **open a folder selection dialog using tkinter**.
-- Choose your **mods directory**
-- Choose your **minecraft jar file** (e.g., `minecraft.jar` or `forge.jar`, etc.)
-- The script will locate and extract all relevant item textures for the frontend.
+After that run `scripts/convertImages.py` to convert the images into webp format and remove the background.
 
 #### 3. Build & Run the Web Server with Docker
 
@@ -74,7 +69,7 @@ docker run -e SECRET=yourSecretHere -e CRAFTING_SECRET=yourCraftingSecretHere -p
 > Some random prankster starts crafting 10 000 buttons. 😱  
 > Be smart—protect your ME system.
 
-Once it’s up and running, open your browser and go to your server’s **public IP address** or **domain name** to access the ME system interface.
+Once it’s up and running, open your browser and go to your server’s **public IP address** or **domain name** to access the web interface.
 
 ---
 
@@ -90,17 +85,20 @@ Then execute `install.lua` to install the full script.
 
 #### Configure the Lua Script
 
-Edit the file: `meWebInterface/config.lua`
+Edit the file: `webInterface/config.lua`
 
 ```lua
 local config = {
-    url = "ws://<your-server-ip>", -- WebSocket URL of the Express server
-    secret = "yourSecretHere",     -- Must match the Docker SECRET (or leave as "secret")
-    maxItemsPerMessage = 100,     -- Maximum number of items to send in one websocket message
+    url = "ws://<your-server-ip>",  -- WebSocket URL of the Express server
+    secret = "yourSecretHere",      -- Must match the Docker SECRET (or leave as "secret")
+    maxItemsPerMessage = 100,       -- Maximum number of items to send in one websocket message
+    system = "me",                  -- Type of storage system ("me" for Applied Energistics 2 ME system or "rs" for Refined Storage)
 }
 
 return config
 ```
+
+After that restart the computer to begin syncing your ME/RS system with the web interface.
 
 ---
 
@@ -109,4 +107,4 @@ return config
 - **Frontend:** React
 - **Backend:** Node.js with Express
 - **Communication:** WebSocket
-- **Minecraft Mods:** Applied Energistics 2, CC Tweaked, Advanced Peripherals
+- **Minecraft Mods:** Applied Energistics 2 or Refined Storage, CC Tweaked, Advanced Peripherals
