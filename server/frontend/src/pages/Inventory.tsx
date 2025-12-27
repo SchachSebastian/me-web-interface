@@ -118,15 +118,15 @@ export const Inventory = () => {
                 <div className="pointer-events-none select-none text-lg mr-2 lg:hidden block whitespace-nowrap text-[#3e3e3e] font-semibold">
                     {filteredItems.length} / {items.length}
                 </div>
-                <div className="relative grow flex justify-end items-center gap-2">
-                    <div className="pointer-events-none select-none text-lg mr-2 lg:block hidden whitespace-nowrap text-[#3e3e3e] font-semibold">
+                <div className="relative grow flex justify-end gap-2 items-stretch">
+                    <div className="pointer-events-none items-center select-none text-lg mr-2 lg:flex hidden whitespace-nowrap text-[#3e3e3e] font-semibold">
                         {filteredItems.length} / {items.length}
                     </div>
                     <button
                         onClick={() =>
                             setOrderBy(orderBy === "name" ? "count" : "name")
                         }
-                        className="select-none w-12 aspect-square hover:cursor-pointer text-2xl px-2 py-1 bg-[#8b8b8b] rounded text-white hover:bg-[#9b9b9b] transition"
+                        className="select-none w-12 hover:cursor-pointer text-2xl px-2 py-1 bg-[#8b8b8b] rounded text-white hover:bg-[#9b9b9b] transition"
                         title={
                             orderBy === "name"
                                 ? "Sort by name"
@@ -139,7 +139,7 @@ export const Inventory = () => {
                         onClick={() =>
                             setOrder(order === "asc" ? "desc" : "asc")
                         }
-                        className="select-none w-12 aspect-square hover:cursor-pointer text-2xl px-2 py-1 bg-[#8b8b8b] rounded text-white hover:bg-[#9b9b9b] transition"
+                        className="select-none w-12 hover:cursor-pointer text-2xl px-2 py-1 bg-[#8b8b8b] rounded text-white hover:bg-[#9b9b9b] transition"
                         title={order === "asc" ? "Ascending" : "Descending"}
                     >
                         {order === "asc" ? "▲" : "▼"}
