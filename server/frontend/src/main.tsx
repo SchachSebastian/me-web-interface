@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { WebsocketProvider } from "./WebsocketProvider";
+import { NotificationProvider } from "./NotificationProvider";
 
 const root = document.getElementById("root");
 if (!root) {
@@ -13,8 +14,10 @@ const wsProtocol = protocol === "https:" ? "wss:" : "ws:";
 const wsUrl = `${wsProtocol}//${hostname}/api`;
 createRoot(root).render(
     <StrictMode>
-        <WebsocketProvider url={wsUrl}>
-            <App />
-        </WebsocketProvider>
+        <NotificationProvider>
+            <WebsocketProvider url={wsUrl}>
+                <App />
+            </WebsocketProvider>
+        </NotificationProvider>
     </StrictMode>
 );

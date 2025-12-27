@@ -80,6 +80,14 @@ export function handleClientWs(socket: WebSocket) {
                     const result = c.callback(received.data);
                     if (result === false) {
                         console.error("Error processing message:", received);
+                        socket.send(
+                            JSON.stringify({
+                                type: "error",
+                                data: {
+                                    reason: received.type
+                                },
+                            })
+                        );
                         socket.close(1008);
                         sockets = sockets.filter((s) => s !== socket);
                     }

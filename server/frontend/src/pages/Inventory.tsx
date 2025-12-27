@@ -15,6 +15,8 @@ import { useNetworkState } from "../requests/useNetworkState";
 import { useResetMessage } from "../requests/useResetMessage";
 import { filterItems } from "../util/filterItems";
 import { useEscapeEffect } from "../hooks/useEscapeEffect";
+import { useErrorMessage } from "../requests/useErrorMessage";
+import { useNotifications } from "../NotificationProvider";
 
 export const Inventory = () => {
     const [searchText, setSearchText] = useQueryParam("search", "");
@@ -27,7 +29,16 @@ export const Inventory = () => {
     const [craftingSecret, setCraftingSecret] = useLocalStorage<
         string | undefined
     >("craftingSecret", undefined);
-    const socket = useWebSocket();
+    const { send } = useWebSocket();
+    const { addNotification } = useNotifications();
+    useErrorMessage("crafting-request", (data) => {
+        addNotification({
+            header: "Crafting failed",
+            message: `The provided crafting secret was invalid.`,
+            success: false,
+        });
+        setCraftingSecret(undefined);
+    });
 
     const items = useMeItems();
     const state = useNetworkState();
@@ -53,15 +64,13 @@ export const Inventory = () => {
             setCraftingSecret(result);
         }
         if (clickedItem?.isCraftable) {
-            socket.send(
-                JSON.stringify({
-                    type: "crafting-request",
-                    data: {
-                        id: clickedItem.id,
-                        count: value,
-                        secret: secret,
-                    },
-                })
+            send(
+                "crafting-request",
+                {
+                    id: clickedItem.id,
+                    count: value,
+                    secret: secret,
+                }
             );
         }
         setClickedItem(undefined);

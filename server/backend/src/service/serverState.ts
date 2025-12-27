@@ -1,7 +1,7 @@
 import { sendClientMessage } from './../clientWs';
 import { $state, State } from 'diff-store';
 export let lastMinecraftResponse: Date = new Date();
-let previousStatus: State["status"] = "server_disconnected";
+let previousStatus: State["status"] = "never_connected";
 
 export const setMinecraftResponseNow = () => {
     lastMinecraftResponse = new Date();

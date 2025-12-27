@@ -4,6 +4,8 @@ import { withErrorBoundary } from "react-error-boundary";
 import { formatCount } from "../util/formatCount";
 import { getItemImagePath, MissingImage } from "../util/getItemImagePath";
 import { hasEnchantmentEffect } from "../util/hasEnchantmentEffect";
+import { useNotifications } from "../NotificationProvider";
+import { useErrorMessage } from "../requests/useErrorMessage";
 
 interface Props {
     item: Item;
@@ -23,6 +25,7 @@ const ItemSquare = (props: Props) => {
             $items.get().find((item) => item.id === props.item.id)
         );
     }
+    const { addNotification } = useNotifications();
     const [useFallbackImage, setUseFallbackImage] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -39,6 +42,11 @@ const ItemSquare = (props: Props) => {
                 id: props.item.id,
             };
             navigator.clipboard.writeText(JSON.stringify(toCopy, null, 2));
+            addNotification({
+                header: "Item Copied",
+                message: `Copied item ${props.item.displayName} to clipboard`,
+                success: true,
+            });
         } else if (props.onClick && props.item.isCraftable && !props.item.isFluid) {
             props.onClick();
         }

@@ -1,21 +1,15 @@
 import { MessageCallback } from "diff-store";
-import { useWebSocket } from "../WebsocketProvider";
 import { useEffect } from "react";
+import { useWebSocket } from "../WebsocketProvider";
 
 function useSubscribe(props: MessageCallback) {
-    const socket = useWebSocket();
+    const { addListener, removeListener } = useWebSocket();
     useEffect(() => {
-        socket.addEventListener("message", (event) => {
-            const received = JSON.parse(event.data);
-            if (received.type === props.type) {
-                props.callback(received.data);
-            }
-        });
-
+        addListener(props);
         return () => {
-            socket.removeEventListener("message", () => {});
+            removeListener(props);
         };
-    }, []);
+    }, [addListener, removeListener]);
 }
 
 export default useSubscribe;
