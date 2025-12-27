@@ -1,26 +1,29 @@
 import { $items, Item } from "diff-store";
 import { useRef, useState } from "react";
 import { VirtuosoGrid } from "react-virtuoso";
+import { useNotifications } from "../NotificationProvider";
 import { useWebSocket } from "../WebsocketProvider";
 import Dialog from "../components/Dialog";
 import HelpDialog from "../components/HelpDialog";
 import ItemSquare from "../components/ItemSquare";
 import { ItemTooltip } from "../components/ItemTooltip";
 import NumberInput from "../components/NumberInput";
+import { useEscapeEffect } from "../hooks/useEscapeEffect";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useQueryParam } from "../hooks/useQueryParam";
 import useVirtuosoComponents from "../hooks/useVirtuosoComponents";
+import { useErrorMessage } from "../requests/useErrorMessage";
 import { useMeItems } from "../requests/useMeItems";
 import { useNetworkState } from "../requests/useNetworkState";
 import { useResetMessage } from "../requests/useResetMessage";
 import { filterItems } from "../util/filterItems";
-import { useEscapeEffect } from "../hooks/useEscapeEffect";
-import { useErrorMessage } from "../requests/useErrorMessage";
-import { useNotifications } from "../NotificationProvider";
+import { orderItems } from "../util/orderItems";
 
 export const Inventory = () => {
     const [searchText, setSearchText] = useQueryParam("search", "");
-    useEscapeEffect(()=>setSearchText(""));
+    const [orderBy, setOrderBy] = useQueryParam("orderBy", "count");
+    const [order, setOrder] = useQueryParam("order", "desc");
+    useEscapeEffect(() => setSearchText(""));
     const [clickedItem, setClickedItem] = useState<Item>();
     const [hoveredItemId, setHoveredItemId] = useState<Item["id"]>();
     const [hoveredItemRef, setHoveredItemRef] =
@@ -49,8 +52,10 @@ export const Inventory = () => {
 
     const gridComponents = useVirtuosoComponents();
 
-    const filteredItems = filterItems(items, searchText ?? "").toSorted(
-        (a, b) => b.count - a.count
+    const filteredItems = orderItems(
+        filterItems(items, searchText ?? ""),
+        orderBy,
+        order
     );
 
     const onCraftItem = (value: number) => {
@@ -64,14 +69,11 @@ export const Inventory = () => {
             setCraftingSecret(result);
         }
         if (clickedItem?.isCraftable) {
-            send(
-                "crafting-request",
-                {
-                    id: clickedItem.id,
-                    count: value,
-                    secret: secret,
-                }
-            );
+            send("crafting-request", {
+                id: clickedItem.id,
+                count: value,
+                secret: secret,
+            });
         }
         setClickedItem(undefined);
     };
@@ -111,7 +113,29 @@ export const Inventory = () => {
                 ) : (
                     <></>
                 )}
-                <div className="relative grow flex justify-end">
+                <div className="relative grow flex justify-end gap-2">
+                    <button
+                        onClick={() =>
+                            setOrderBy(orderBy === "name" ? "count" : "name")
+                        }
+                        className="w-12 aspect-square hover:cursor-pointer text-2xl px-2 py-1 bg-[#8b8b8b] rounded text-white hover:bg-[#9b9b9b] transition"
+                        title={
+                            orderBy === "name"
+                                ? "Sort by name"
+                                : "Sort by count"
+                        }
+                    >
+                        {orderBy === "name" ? "🔤" : "#"}
+                    </button>
+                    <button
+                        onClick={() =>
+                            setOrder(order === "asc" ? "desc" : "asc")
+                        }
+                        className="w-12 aspect-square hover:cursor-pointer text-2xl px-2 py-1 bg-[#8b8b8b] rounded text-white hover:bg-[#9b9b9b] transition"
+                        title={order === "asc" ? "Ascending" : "Descending"}
+                    >
+                        {order === "asc" ? "▲" : "▼"}
+                    </button>
                     <input
                         type="text"
                         value={searchText ?? ""}
@@ -119,7 +143,7 @@ export const Inventory = () => {
                         className="bg-[#8b8b8b] rounded px-3 py-1 text-white text-4xl pr-10 w-full xl:max-w-3/5"
                     />
                     <button
-                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black rounded-full border-no w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 transition"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 transition"
                         onClick={() => setOpenHelp(true)}
                         title="Help"
                     >
