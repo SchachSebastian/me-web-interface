@@ -1,4 +1,4 @@
-import { MessageCallback } from "diff-store";
+import { $state, MessageCallback } from "diff-store";
 import { createContext, ReactNode, useContext, useEffect, useRef } from "react";
 
 type WebsocketContextType = {
@@ -22,6 +22,10 @@ export const WebsocketProvider = (props: Props) => {
     const connect = () => {
         const ws = new WebSocket(props.url);
 
+        ws.onopen = () => {
+            console.log("WebSocket connected");
+        };
+
         ws.onmessage = (event) => {
             const received = JSON.parse(event.data);
             listenersRef.current.forEach((listener) => {
@@ -33,6 +37,10 @@ export const WebsocketProvider = (props: Props) => {
 
         ws.onclose = (event) => {
             console.error("WebSocket closed:", event);
+            $state.set({
+                ...$state.get(),
+                status: "server_disconnected",
+            });
             setTimeout(connect, 1000);
         };
 
