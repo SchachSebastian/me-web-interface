@@ -80,45 +80,53 @@ export const Inventory = () => {
 
     return (
         <>
-            <div className="flex flex-wrap gap-4 items-center bg-[#c6c6c6] pb-5">
-                {state.itemStorage ? (
-                    <div className="pointer-events-none min-w-fit">
-                        {"📦 "}
-                        {(state.itemStorage * 100).toFixed(2)} %
+            <div className="flex flex-wrap gap-4 items-center justify-between bg-[#c6c6c6] pb-5">
+                <div className="relative flex items-center gap-2">
+                    {state.itemStorage ? (
+                        <div className="pointer-events-none min-w-fit">
+                            {"📦 "}
+                            {(state.itemStorage * 100).toFixed(2)} %
+                        </div>
+                    ) : (
+                        <></>
+                    )}
+                    {state.fluidStorage ? (
+                        <div className="pointer-events-none min-w-fit">
+                            {"💧 "}
+                            {(state.fluidStorage * 100).toFixed(2)} %
+                        </div>
+                    ) : (
+                        <></>
+                    )}
+                    {state.chemicalStorage ? (
+                        <div className="pointer-events-none min-w-fit">
+                            {"🧪 "}
+                            {(state.chemicalStorage * 100).toFixed(2)} %
+                        </div>
+                    ) : (
+                        <></>
+                    )}
+                    {state.energyStorage ? (
+                        <div className="pointer-events-none min-w-fit">
+                            {"⚡ "}
+                            {(state.energyStorage * 100).toFixed(2)} %
+                        </div>
+                    ) : (
+                        <></>
+                    )}
+                </div>
+                <div className="pointer-events-none select-none text-lg mr-2 lg:hidden block whitespace-nowrap text-[#3e3e3e] font-semibold">
+                    {filteredItems.length} / {items.length}
+                </div>
+                <div className="relative grow flex justify-end items-center gap-2">
+                    <div className="pointer-events-none select-none text-lg mr-2 lg:block hidden whitespace-nowrap text-[#3e3e3e] font-semibold">
+                        {filteredItems.length} / {items.length}
                     </div>
-                ) : (
-                    <></>
-                )}
-                {state.fluidStorage ? (
-                    <div className="pointer-events-none min-w-fit">
-                        {"💧 "}
-                        {(state.fluidStorage * 100).toFixed(2)} %
-                    </div>
-                ) : (
-                    <></>
-                )}
-                {state.chemicalStorage ? (
-                    <div className="pointer-events-none min-w-fit">
-                        {"🧪 "}
-                        {(state.chemicalStorage * 100).toFixed(2)} %
-                    </div>
-                ) : (
-                    <></>
-                )}
-                {state.energyStorage ? (
-                    <div className="pointer-events-none min-w-fit">
-                        {"⚡ "}
-                        {(state.energyStorage * 100).toFixed(2)} %
-                    </div>
-                ) : (
-                    <></>
-                )}
-                <div className="relative grow flex justify-end gap-2">
                     <button
                         onClick={() =>
                             setOrderBy(orderBy === "name" ? "count" : "name")
                         }
-                        className="w-12 aspect-square hover:cursor-pointer text-2xl px-2 py-1 bg-[#8b8b8b] rounded text-white hover:bg-[#9b9b9b] transition"
+                        className="select-none w-12 aspect-square hover:cursor-pointer text-2xl px-2 py-1 bg-[#8b8b8b] rounded text-white hover:bg-[#9b9b9b] transition"
                         title={
                             orderBy === "name"
                                 ? "Sort by name"
@@ -131,7 +139,7 @@ export const Inventory = () => {
                         onClick={() =>
                             setOrder(order === "asc" ? "desc" : "asc")
                         }
-                        className="w-12 aspect-square hover:cursor-pointer text-2xl px-2 py-1 bg-[#8b8b8b] rounded text-white hover:bg-[#9b9b9b] transition"
+                        className="select-none w-12 aspect-square hover:cursor-pointer text-2xl px-2 py-1 bg-[#8b8b8b] rounded text-white hover:bg-[#9b9b9b] transition"
                         title={order === "asc" ? "Ascending" : "Descending"}
                     >
                         {order === "asc" ? "▲" : "▼"}

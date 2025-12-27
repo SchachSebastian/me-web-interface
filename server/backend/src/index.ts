@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 import { WebSocketServer } from "ws";
 import { handleMinecraftWs } from "./minecraftWs";
 import updateCountHistoryInterval from "./service/countHistory";
-import updateServerStateInterval from "./service/serverState";
 import { $state } from 'diff-store';
 
 dotenv.config();
@@ -47,7 +46,6 @@ ws.on("connection", (socket, req) => {
 });
 
 updateCountHistoryInterval();
-updateServerStateInterval();
 
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on port ${PORT}`);
