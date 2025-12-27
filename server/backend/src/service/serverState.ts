@@ -22,7 +22,7 @@ export const setMinecraftResponseNow = () => {
 const updateServerStateInterval = () =>
     setInterval(() => {
         if(new Date().getTime() - lastMinecraftResponse.getTime() > 10 * 1000) {
-            if ($state.get().status !== "minecraft_disconnected") {
+            if ($state.get().status !== "minecraft_disconnected" && $state.get().status !== "never_connected") {
                 console.warn("No response from Minecraft server in the last 10 seconds.");
                 previousStatus = $state.get().status;
                 $state.set({

@@ -52,6 +52,11 @@ export function handleClientWs(socket: WebSocket) {
     console.log("[Client WS] WebSocket connection established");
     socket.send(
         JSON.stringify({
+            type: "reset"
+        } as Message)
+    );
+    socket.send(
+        JSON.stringify({
             type: "state-update",
             data: $state.get(),
         } as Message)
