@@ -39,7 +39,7 @@ export const Inventory = () => {
         addNotification({
             header: "Crafting failed",
             message: `The provided crafting secret was invalid.`,
-            success: false,
+            status: "error",
         });
         setCraftingSecret(undefined);
     });
