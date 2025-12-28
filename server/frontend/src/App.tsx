@@ -18,7 +18,7 @@ function App() {
                     >
                         <div
                             className={
-                                "bg-[#c6c6c6] rounded-t border-white border-b-0 border-8 p-2 text-[#3e3e3e] text-4xl font-bold hover:cursor-pointer " +
+                                "bg-[#c6c6c6] rounded-t select-none border-white border-b-0 border-8 p-2 text-[#3e3e3e] text-4xl font-bold hover:cursor-pointer " +
                                 (openPage === "/" ? "z-1" : "pb-4")
                             }
                             onClick={() => {
@@ -32,7 +32,7 @@ function App() {
                         </div>
                         <div
                             className={
-                                "bg-[#c6c6c6] rounded-t border-white border-b-0 border-8 p-2 text-[#3e3e3e] text-4xl font-bold hover:cursor-pointer " +
+                                "bg-[#c6c6c6] rounded-t select-none border-white border-b-0 border-8 p-2 text-[#3e3e3e] text-4xl font-bold hover:cursor-pointer " +
                                 (openPage === "/crafting" ? "z-1" : "pb-4")
                             }
                             style={{
@@ -59,7 +59,7 @@ function App() {
                 </div>
                 <div className="w-full flex-grow bg-[#c6c6c6] border-white border-8 rounded rounded-tl-none flex flex-col overflow-hidden p-5">
                     {openPage === "/" ? <Inventory /> : <></>}
-                    {openPage === "/crafting" ? <></> : <></>}
+                    {openPage === "/crafting" ? <div>Coming soon...</div> : <></>}
                 </div>
             </div>
             <NotificationArea />

@@ -47,7 +47,7 @@ const ItemSquare = (props: Props) => {
                 message: `Copied item ${props.item.displayName} to clipboard`,
                 success: true,
             });
-        } else if (props.onClick && props.item.isCraftable && !props.item.isFluid) {
+        } else if (props.onClick && props.item.isCraftable) {
             props.onClick();
         }
     };

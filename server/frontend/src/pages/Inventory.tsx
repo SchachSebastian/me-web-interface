@@ -115,11 +115,11 @@ export const Inventory = () => {
                         <></>
                     )}
                 </div>
-                <div className="pointer-events-none select-none text-lg mr-2 lg:hidden block whitespace-nowrap text-[#3e3e3e] font-semibold">
+                <div className="pointer-events-none text-lg mr-2 lg:hidden block whitespace-nowrap text-[#3e3e3e] font-semibold">
                     {filteredItems.length} / {items.length}
                 </div>
                 <div className="relative grow flex justify-end gap-2 items-stretch">
-                    <div className="pointer-events-none items-center select-none text-lg mr-2 lg:flex hidden whitespace-nowrap text-[#3e3e3e] font-semibold">
+                    <div className="pointer-events-none items-center text-lg mr-2 lg:flex hidden whitespace-nowrap text-[#3e3e3e] font-semibold">
                         {filteredItems.length} / {items.length}
                     </div>
                     <button
@@ -151,7 +151,7 @@ export const Inventory = () => {
                         className="bg-[#8b8b8b] rounded px-3 py-1 text-white text-4xl pr-10 w-full xl:max-w-3/5"
                     />
                     <button
-                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 transition"
+                        className="select-none absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 transition"
                         onClick={() => setOpenHelp(true)}
                         title="Help"
                     >
