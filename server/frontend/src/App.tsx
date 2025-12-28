@@ -1,4 +1,3 @@
-import { NotificationArea } from "./components/NotificationArea";
 import { StatusBadge } from "./components/StatusBadge";
 import { usePath } from "./hooks/usePath";
 import { Inventory } from "./pages/Inventory";
@@ -62,7 +61,6 @@ function App() {
                     {openPage === "/crafting" ? <div>Coming soon...</div> : <></>}
                 </div>
             </div>
-            <NotificationArea />
         </>
     );
 }

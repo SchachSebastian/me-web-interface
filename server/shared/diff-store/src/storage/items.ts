@@ -29,5 +29,5 @@ export const updateItemStorage = (updates: ItemUpdate[]) => {
         .forEach((item) => {
             new_items.push(item as Item);
         });
-    $items.set(new_items.filter(item => item.id && item.count).sort((a, b) => b.count - a.count));
+    $items.set(new_items.filter(item => item.id && item.count !== undefined).sort((a, b) => b.count - a.count));
 };

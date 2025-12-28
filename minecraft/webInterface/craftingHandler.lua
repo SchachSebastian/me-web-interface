@@ -25,12 +25,19 @@ local function handleCraftingRequest(id, count)
     elseif result.isCalculationNotSuccessful() then
         print("Crafting calculation not successful")
         status = "calculation_failed"
+        debugMessage = result.getDebugMessage()
     elseif result.hasErrorOccurred() then
         print("Crafting failed with error:", result.getDebugMessage())
         debugMessage = result.getDebugMessage()
-    else
+    elseif result.isCraftingStarted() then
         status = "success"
         print("Crafting success:", id, count)
+    elseif result.getMissingItems() ~= nil then
+        status = "items_missing"
+        print("Items missing for: ", id, count)
+    else
+        print("Crafting failed with error:", result.getDebugMessage())
+        debugMessage = result.getDebugMessage()
     end
 
     local data = {

@@ -2,9 +2,9 @@ import { $state, MessageCallback } from "diff-store";
 import { createContext, ReactNode, useContext, useEffect, useRef } from "react";
 
 type WebsocketContextType = {
-    addListener: (listener: MessageCallback) => void;
-    removeListener: (listener: MessageCallback) => void;
-    send: (type:string, data: any) => void;
+    addListener: (listener: MessageCallback) => string;
+    removeListener: (id: string) => void;
+    send: (type: string, data: any) => void;
 };
 
 const WebsocketContext = createContext<WebsocketContextType | undefined>(
@@ -17,7 +17,7 @@ interface Props {
 }
 export const WebsocketProvider = (props: Props) => {
     const socketRef = useRef<WebSocket | null>(null);
-    const listenersRef = useRef(new Set<MessageCallback>());
+    const listenersRef = useRef(new Map<string, MessageCallback>());
 
     const connect = () => {
         const ws = new WebSocket(props.url);
@@ -29,7 +29,7 @@ export const WebsocketProvider = (props: Props) => {
         ws.onmessage = (event) => {
             const received = JSON.parse(event.data);
             listenersRef.current.forEach((listener) => {
-                if (received.type === listener.type) {
+                if (listener.type === received.type) {
                     listener.callback(received.data);
                 }
             });
@@ -71,10 +71,12 @@ export const WebsocketProvider = (props: Props) => {
     }, []);
 
     const addListener = (listener: MessageCallback) => {
-        listenersRef.current.add(listener);
+        const id = crypto.randomUUID();
+        listenersRef.current.set(id, listener);
+        return id;
     };
-    const removeListener = (listener: MessageCallback) => {
-        listenersRef.current.delete(listener);
+    const removeListener = (id: string) => {
+        listenersRef.current.delete(id);
     };
     const send = (type: string, data: any) => {
         socketRef.current?.send(JSON.stringify({ type, data }));

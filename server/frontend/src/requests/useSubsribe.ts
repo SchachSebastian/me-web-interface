@@ -5,9 +5,9 @@ import { useWebSocket } from "../WebsocketProvider";
 function useSubscribe(props: MessageCallback) {
     const { addListener, removeListener } = useWebSocket();
     useEffect(() => {
-        addListener(props);
+        const listenerId = addListener(props);
         return () => {
-            removeListener(props);
+            removeListener(listenerId);
         };
     }, [addListener, removeListener]);
 }

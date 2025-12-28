@@ -18,6 +18,7 @@ import { useNetworkState } from "../requests/useNetworkState";
 import { useResetMessage } from "../requests/useResetMessage";
 import { filterItems } from "../util/filterItems";
 import { orderItems } from "../util/orderItems";
+import { useCraftingResponses } from "../requests/useCraftingResponses";
 
 export const Inventory = () => {
     const [searchText, setSearchText] = useQueryParam("search", "");
@@ -42,11 +43,13 @@ export const Inventory = () => {
         });
         setCraftingSecret(undefined);
     });
+    useCraftingResponses();
 
     const items = useMeItems();
     const state = useNetworkState();
 
     useResetMessage(() => $items.set([]));
+    
 
     const ref = useRef<HTMLDivElement>(null);
 

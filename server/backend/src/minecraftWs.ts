@@ -1,6 +1,7 @@
 import {
     $items,
     $state,
+    CraftingResponse,
     defaultState,
     Message,
     MessageCallback,
@@ -15,12 +16,6 @@ import { sendClientMessage } from "./clientWs";
 import { MinecraftItem, MinecraftItemUpdate } from "./types/MinecraftItem";
 
 dotenv.config();
-
-type CraftingResponse = {
-    id: string;
-    count: number;
-    success: boolean;
-};
 
 let minecraftSocket: WebSocket | null = null;
 let messageCallbacks: MessageCallback[] = [
