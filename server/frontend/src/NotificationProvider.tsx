@@ -8,10 +8,10 @@ import {
 import ReactDOM from "react-dom";
 
 type Notification = {
-    id: number;
+    id: string;
     header: string;
     message?: string;
-    success?: boolean;
+    status: 'success' | 'warning' | 'error';
 };
 
 type NotificationContextType = {
@@ -30,6 +30,12 @@ export const useNotifications = () => {
     return context;
 };
 
+const colors = {
+    success: "border-green-500",
+    warning: "border-orange-500",
+    error: "border-red-500",
+};
+
 export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -37,13 +43,13 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
         (notification: Omit<Notification, "id">) => {
             setNotifications((prev) => [
                 ...prev,
-                { ...notification, id: Date.now() },
+                { ...notification, id: crypto.randomUUID() },
             ]);
         },
         []
     );
 
-    const removeNotification = (id: number) => {
+    const removeNotification = (id: string) => {
         setNotifications((prev) => prev.filter((n) => n.id !== id));
     };
 
@@ -59,9 +65,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
                             className={`
                                 px-4 py-3 rounded-lg shadow-lg transition-opacity
                                 ${
-                                    notification.success
-                                        ? "border-green-500"
-                                        : "border-red-500"
+                                    colors[notification.status]
                                 }
                                 border-2 bg-black/90 text-white animate-achievement
                                 font-mono

@@ -45,7 +45,7 @@ const ItemSquare = (props: Props) => {
             addNotification({
                 header: "Item Copied",
                 message: `Copied item ${props.item.displayName} to clipboard`,
-                success: true,
+                status: "success",
             });
         } else if (props.onClick && props.item.isCraftable) {
             props.onClick();
