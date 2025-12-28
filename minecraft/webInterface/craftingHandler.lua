@@ -17,14 +17,30 @@ local function handleCraftingRequest(id, count)
         result, error = bridge.craftChemical(filter)
     end
 
-    local success = result ~= nil
-    if not success then
-        print("Crafting error:", error)
+    local status = "failed"
+    local debugMessage = nil
+
+    if result == nil then
+        print("Crafting failed with unknown error")
+    elseif result.isCalculationNotSuccessful() then
+        print("Crafting calculation not successful")
+        status = "calculation_failed"
+    elseif result.hasErrorOccurred() then
+        print("Crafting failed with error:", result.getDebugMessage())
+        debugMessage = result.getDebugMessage()
     else
+        status = "success"
         print("Crafting success:", id, count)
     end
 
-    return success
+    local data = {
+        status = status,
+        id = id,
+        count = count,
+        debugMessage = debugMessage
+    }
+
+    return data
 end
 
 return {

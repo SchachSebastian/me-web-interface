@@ -45,14 +45,10 @@ local function handleMessages()
             if type == "crafting-request" then
                 local id = data.id
                 local count = data.count or 1
-                local success = handleCraftingRequest(id, count)
+                local result = handleCraftingRequest(id, count)
                 ws.send(textutils.serialiseJSON({
                     type = "crafting-response",
-                    data = {
-                        success = success,
-                        id = id,
-                        count = count
-                    }
+                    data = result
                 }))
             end
         end
