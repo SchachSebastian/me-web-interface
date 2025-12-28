@@ -35,6 +35,11 @@ export const updateCountHistory = (
             });
         }
     });
+    $countHistory.get().forEach((old) => {
+        if (!updates.find((update) => update.id === old.id)) {
+            new_history.push(old);
+        }
+    });
     $countHistory.set(new_history);
 };
 

@@ -1,6 +1,7 @@
 import {
     $items,
     $state,
+    CraftingResponse,
     defaultState,
     Message,
     MessageCallback,
@@ -12,16 +13,9 @@ import http from "http";
 import typia from "typia";
 import WebSocket, { Data } from "ws";
 import { sendClientMessage } from "./clientWs";
-import { setMinecraftResponseNow } from "./service/serverState";
 import { MinecraftItem, MinecraftItemUpdate } from "./types/MinecraftItem";
 
 dotenv.config();
-
-type CraftingResponse = {
-    id: string;
-    count: number;
-    success: boolean;
-};
 
 let minecraftSocket: WebSocket | null = null;
 let messageCallbacks: MessageCallback[] = [
@@ -137,7 +131,6 @@ export function handleMinecraftWs(
                 socket.close(1008);
                 return;
             }
-            setMinecraftResponseNow();
             messageCallbacks
                 .filter((c) => c.type === received.type)
                 .forEach((c) => {
@@ -153,12 +146,22 @@ export function handleMinecraftWs(
         }
     });
 
-    minecraftSocket.on("[Minecraft WS] error", function (err: any) {
-        console.error("Error:", err);
+    minecraftSocket.on("error", function (err: any) {
+        console.error("[Minecraft WS] Error:", err);
         minecraftSocket = null;
     });
 
     minecraftSocket.on("close", function () {
+        $state.set({
+            ...$state.get(),
+            status: "minecraft_disconnected",
+        });
+        sendClientMessage({
+            type: "state-update",
+            data: {
+                status: "minecraft_disconnected",
+            },
+        });
         console.log("[Minecraft WS] Socket closed");
         minecraftSocket = null;
     });

@@ -1,13 +1,10 @@
-import {
-    createContext,
-    ReactNode,
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+import { $state, MessageCallback } from "diff-store";
+import { createContext, ReactNode, useContext, useEffect, useRef } from "react";
 
 type WebsocketContextType = {
-    socket: WebSocket;
+    addListener: (listener: MessageCallback) => string;
+    removeListener: (id: string) => void;
+    send: (type: string, data: any) => void;
 };
 
 const WebsocketContext = createContext<WebsocketContextType | undefined>(
@@ -19,11 +16,49 @@ interface Props {
     children: ReactNode;
 }
 export const WebsocketProvider = (props: Props) => {
-    const [socket, setSocket] = useState(new WebSocket(props.url));
+    const socketRef = useRef<WebSocket | null>(null);
+    const listenersRef = useRef(new Map<string, MessageCallback>());
+
+    const connect = () => {
+        const ws = new WebSocket(props.url);
+
+        ws.onopen = () => {
+            console.log("WebSocket connected");
+        };
+
+        ws.onmessage = (event) => {
+            const received = JSON.parse(event.data);
+            listenersRef.current.forEach((listener) => {
+                if (listener.type === received.type) {
+                    listener.callback(received.data);
+                }
+            });
+        };
+
+        ws.onclose = (event) => {
+            console.error("WebSocket closed:", event);
+            $state.set({
+                ...$state.get(),
+                status: "server_disconnected",
+            });
+            setTimeout(connect, 1000);
+        };
+
+        ws.onerror = (err) => {
+            console.error("WebSocket error:", err);
+            ws.close();
+        };
+
+        socketRef.current = ws;
+    };
+
     useEffect(() => {
+        connect();
+
         const handleFocus = () => {
-            if (socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING) {
-                setSocket(new WebSocket(props.url));
+            const ws = socketRef.current;
+            if (!ws || ws.readyState === WebSocket.CLOSED) {
+                connect();
             }
         };
 
@@ -31,18 +66,24 @@ export const WebsocketProvider = (props: Props) => {
 
         return () => {
             window.removeEventListener("focus", handleFocus);
+            socketRef.current?.close();
         };
     }, []);
-    useEffect(() => {
-        socket.addEventListener("close", (event) => {
-            console.error("WebSocket error observed:", event);
-            localStorage.removeItem("craftingSecret");
-            setSocket(new WebSocket(props.url));
-            location.reload();
-        });
-    }, [socket]);
+
+    const addListener = (listener: MessageCallback) => {
+        const id = crypto.randomUUID();
+        listenersRef.current.set(id, listener);
+        return id;
+    };
+    const removeListener = (id: string) => {
+        listenersRef.current.delete(id);
+    };
+    const send = (type: string, data: any) => {
+        socketRef.current?.send(JSON.stringify({ type, data }));
+    };
+
     return (
-        <WebsocketContext.Provider value={{ socket }}>
+        <WebsocketContext.Provider value={{ addListener, removeListener, send }}>
             {props.children}
         </WebsocketContext.Provider>
     );
@@ -53,5 +94,5 @@ export const useWebSocket = () => {
     if (!context) {
         throw new Error("useWebSocket must be used within a WebsocketProvider");
     }
-    return context.socket;
+    return context;
 };

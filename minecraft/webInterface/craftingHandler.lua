@@ -1,13 +1,53 @@
 local bridge = require("bridge")
 
 local function handleCraftingRequest(id, count)
-    local last = id:sub(-1)
+    local type = id:sub(-1)
     local fingerprint = id:sub(1, -2)
-    local success, err = bridge.craftItem({
+    local filter = {
         fingerprint = fingerprint,
         count = count
-    })
-    return success, err
+    }
+    local result = nil
+    local error = nil
+    if type == 'i' then
+        result, error = bridge.craftItem(filter)
+    elseif type == 'f' then
+        result, error = bridge.craftFluid(filter)
+    elseif type == 'c' then
+        result, error = bridge.craftChemical(filter)
+    end
+
+    local status = "failed"
+    local debugMessage = nil
+
+    if result == nil then
+        print("Crafting failed with unknown error")
+    elseif result.isCalculationNotSuccessful() then
+        print("Crafting calculation not successful")
+        status = "calculation_failed"
+        debugMessage = result.getDebugMessage()
+    elseif result.hasErrorOccurred() then
+        print("Crafting failed with error:", result.getDebugMessage())
+        debugMessage = result.getDebugMessage()
+    elseif result.isCraftingStarted() then
+        status = "success"
+        print("Crafting success:", id, count)
+    elseif result.getMissingItems() ~= nil then
+        status = "items_missing"
+        print("Items missing for: ", id, count)
+    else
+        print("Crafting failed with error:", result.getDebugMessage())
+        debugMessage = result.getDebugMessage()
+    end
+
+    local data = {
+        status = status,
+        id = id,
+        count = count,
+        debugMessage = debugMessage
+    }
+
+    return data
 end
 
 return {

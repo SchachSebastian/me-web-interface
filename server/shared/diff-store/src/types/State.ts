@@ -9,5 +9,6 @@ export type State = {
         | "network_offline"
         | "network_connected"
         | "minecraft_disconnected"
-        | "server_disconnected";
+        | "server_disconnected"
+        | "never_connected";
 };
